@@ -1,0 +1,7 @@
+# Node
+/node_modules/
+
+# SBT
+/project/project/target
+/project/target
+/target
