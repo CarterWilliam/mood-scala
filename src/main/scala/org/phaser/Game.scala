@@ -6,4 +6,4 @@ import scala.scalajs.js.|
 
 @js.native
 @js.annotation.JSGlobal("Phaser.Game")
-class Game(width: Int, height: Int, renderer: Int, parent: String) extends js.Object
+class Game(config: Config) extends js.Object
