@@ -1,26 +1,29 @@
 package mood.scenes
 
-import org.phaser.{Scene, SceneConfig}
+import org.phaser.scenes.{Scene, SceneConfig}
 
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 @ScalaJSDefined
-class Boot extends Scene(Boot.Config) {
+class BootScene extends Scene(BootScene.Config) {
 
   override def preload(): Unit = {
     println(s"Boot.preload()")
+    load.image("splash", "assets/images/splash.jpg")
+    load.image("loading-bar", "assets/images/loading.png")
   }
 
   override def create(): Unit = {
     println("Boot.create()")
+    scene.start(LoadScene.Config.key)
   }
 
   override def update(time: Double, delta: Double) = {
-    println(s"Boot.update($time)")
+
   }
 
 }
 
-object Boot {
+object BootScene {
   val Config = SceneConfig("boot")
 }

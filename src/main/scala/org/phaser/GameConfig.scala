@@ -1,6 +1,7 @@
 package org.phaser
 
 import org.phaser.Phaser.RenderType
+import org.phaser.scenes.Scene
 
 import scala.scalajs.js
 import js.JSConverters._
