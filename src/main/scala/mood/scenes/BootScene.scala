@@ -11,6 +11,9 @@ class BootScene extends Scene(BootScene.Config) {
     println(s"Boot.preload()")
     load.image("splash", "assets/images/splash.jpg")
     load.image("loading-bar", "assets/images/loading.png")
+    load.image("menu-skull", "assets/images/menu-select-skull.png")
+
+    load.audio("pistol", "assets/audio/guns/pistol.ogg")
   }
 
   override def create(): Unit = {
