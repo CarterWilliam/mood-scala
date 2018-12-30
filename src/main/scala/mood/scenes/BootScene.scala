@@ -1,19 +1,21 @@
 package mood.scenes
 
+import mood.{Assets, SceneLoader}
 import org.phaser.scenes.{Scene, SceneConfig}
 
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 @ScalaJSDefined
 class BootScene extends Scene(BootScene.Config) {
+  private val loader = new SceneLoader(this)
 
   override def preload(): Unit = {
     println(s"Boot.preload()")
-    load.image("splash", "assets/images/splash.jpg")
-    load.image("loading-bar", "assets/images/loading.png")
-    load.image("menu-skull", "assets/images/menu-select-skull.png")
+    loader.load(Assets.Textures.Splash)
+    loader.load(Assets.Textures.LoadingBar)
+    loader.load(Assets.Textures.MenuSkull)
 
-    load.audio("pistol", "assets/audio/guns/pistol.ogg")
+    loader.load(Assets.Audio.Pistol)
   }
 
   override def create(): Unit = {
