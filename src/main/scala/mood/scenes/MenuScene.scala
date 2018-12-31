@@ -58,13 +58,17 @@ object MenuScene {
 
   val InitialMenu = Menu(
     MenuChoice(
-      MenuOption("Start Game", SubMenu(
+      MenuOption("New Game", SubMenu(
         MenuOption("I'm too young to die.", DoAction(() => (): Unit)),
         MenuOption("Not too rough.", DoAction(() => (): Unit)),
         MenuOption("Hurt me plenty.", DoAction(() => (): Unit)),
         MenuOption("Ultra-Violence.", DoAction(() => (): Unit)),
         MenuOption("NIGHTMARE!", StartScene("loading"))
-      ))
+      )),
+      MenuOption("Options", DoAction(() => (): Unit)),
+      MenuOption("Load Game", DoAction(() => (): Unit)),
+      MenuOption("Save Game", DoAction(() => (): Unit)),
+      MenuOption("Quit Game", DoAction(() => (): Unit))
     )
   )
 
@@ -79,12 +83,27 @@ class MenuController(scene: Scene) {
   def select(): Unit = ???
 
   private def drawChoice(): Unit = {
-
+    val option = menu.choice.options.head
+    val text = scene.add.text(MenuController.x, MenuController.y, option.text, MenuController.TextStyle)
+    text.setDepth(MenuScene.Depth.MenuText)
   }
 
   private def drawSkull(position: Int): Unit = {
 
   }
+}
+
+object MenuController {
+  val x: Int = 200
+  val y: Int = 300
+
+  val TextStyle: js.Object = js.Dynamic.literal(
+    color = "#BB0000",
+    align = "left",
+    font = "28pt Doom",
+    stroke = "#000000",
+    strokeThickness = 4
+  )
 }
 
 case class Menu(choice: MenuChoice, history: Seq[MenuChoice] = Nil) {
