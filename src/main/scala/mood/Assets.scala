@@ -27,7 +27,7 @@ object Assets {
 class SceneLoader(scene: Scene) extends js.Object {
 
   def load(audio: AudioAsset): Unit = {
-    scene.load.image(audio.key, audio.url)
+    scene.load.audio(audio.key, audio.url)
   }
 
   def load(texture: TextureAsset): Unit = {

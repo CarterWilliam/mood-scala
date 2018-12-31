@@ -20,7 +20,7 @@ class BootScene extends Scene(BootScene.Config) {
 
   override def create(): Unit = {
     println("Boot.create()")
-    scene.start(LoadScene.Config.key)
+    scene.start(MenuScene.Config.key)
   }
 
   override def update(time: Double, delta: Double) = {

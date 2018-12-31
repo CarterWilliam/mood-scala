@@ -1,6 +1,6 @@
 package mood
 
-import mood.scenes.{BootScene, LoadScene}
+import mood.scenes.{BootScene, LoadScene, MenuScene}
 import org.phaser.{Game, GameConfig}
 import org.phaser.Phaser.RenderType
 
@@ -12,7 +12,7 @@ object Main {
     val config: GameConfig = GameConfig(
       renderType = RenderType.CANVAS,
       parent = Some("game-container"),
-      scenes = Seq(new BootScene, new LoadScene))
+      scenes = Seq(new BootScene, new MenuScene, new LoadScene))
     val game = new Game(config)
   }
 }

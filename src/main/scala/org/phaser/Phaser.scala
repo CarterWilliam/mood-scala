@@ -1,9 +1,5 @@
 package org.phaser
 
-import scala.scalajs.js
-import org.scalajs.dom.raw._
-import scala.scalajs.js.|
-
 object Phaser {
   sealed trait RenderType { def value: Int }
   object RenderType {
