@@ -9,7 +9,6 @@ class BootScene extends Scene(BootScene.Config) {
   private val loader = new SceneLoader(this)
 
   override def preload(): Unit = {
-    println(s"Boot.preload()")
     loader.load(Assets.Textures.Splash)
     loader.load(Assets.Textures.LoadingBar)
     loader.load(Assets.Textures.MenuSkull)
@@ -18,7 +17,6 @@ class BootScene extends Scene(BootScene.Config) {
   }
 
   override def create(): Unit = {
-    println("Boot.create()")
     scene.start(MenuScene.Config.key)
   }
 
