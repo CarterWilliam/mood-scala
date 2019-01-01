@@ -3,17 +3,15 @@ package mood.scenes
 import cats.data.NonEmptyList
 import mood.Assets
 import mood.scenes.MenuScene.Depth
-import monocle.Lens
-import monocle.macros.GenLens
+import org.phaser.gameobjects.sprite.Sprite
+import org.phaser.gameobjects.text.Text
 import org.phaser.input.keyboard.CursorKeys
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
 
-@ScalaJSDefined
 class MenuScene extends Scene(MenuScene.Config) {
   var menu: MenuController = _
   var keyboard: CursorKeys = _
@@ -26,16 +24,35 @@ class MenuScene extends Scene(MenuScene.Config) {
   }
 
   override def create(): Unit = {
-    menu = new MenuController(scene = this)
+    menu = new MenuController(menuScene = this)
     keyboard = input.keyboard.createCursorKeys()
     lastMenuEvent = 0
   }
 
   override def update(time: Double, delta: Double): Unit = {
+    def doAction(action: => Unit): Unit = {
+      sound.play(Assets.Audio.Pistol.key)
+      lastMenuEvent = time
+      action
+    }
+
     if (canUpdateMenu(time)) {
-      if (keyboard.space.isDown) {
-        sound.play(Assets.Audio.Pistol.key)
-        lastMenuEvent = time
+      if (keyboard.down.isDown) {
+        doAction {
+          menu.down()
+        }
+      } else if (keyboard.up.isDown) {
+        doAction {
+          menu.up()
+        }
+      } else if (keyboard.left.isDown) {
+        doAction {
+          menu.back()
+        }
+      } else if (keyboard.right.isDown || keyboard.space.isDown) {
+        doAction {
+          menu.select()
+        }
       }
     }
   }
@@ -56,7 +73,7 @@ object MenuScene {
 
   val Speed: FiniteDuration = 100.milliseconds
 
-  val InitialMenu = Menu(
+  val InitialMenu = MenuModel(
     MenuChoice(
       MenuOption("New Game", SubMenu(
         MenuOption("I'm too young to die.", DoAction(() => (): Unit)),
@@ -74,28 +91,72 @@ object MenuScene {
 
 }
 
-class MenuController(scene: Scene) {
-  var menu: Menu = MenuScene.InitialMenu
+class MenuController(menuScene: Scene) {
+  import MenuController._
+
+  private var model: MenuModel = MenuScene.InitialMenu
+  private var visibleOptions: Seq[Text] = Nil
+  private var cursor: Sprite = menuScene.add.sprite(
+    x = MenuX + CursorOffsetX,
+    y = MenuY + CursorOffsetY,
+    texture = Assets.Textures.MenuSkull.key)
+  cursor.setDepth(MenuScene.Depth.MenuText)
+
   drawChoice()
+  moveCursor()
 
-  def up(): Unit = ???
-  def down(): Unit = ???
-  def select(): Unit = ???
-
-  private def drawChoice(): Unit = {
-    val option = menu.choice.options.head
-    val text = scene.add.text(MenuController.x, MenuController.y, option.text, MenuController.TextStyle)
-    text.setDepth(MenuScene.Depth.MenuText)
+  def up(): Unit = {
+    model = model.up()
+    moveCursor()
   }
 
-  private def drawSkull(position: Int): Unit = {
+  def down(): Unit = {
+    model = model.down()
+    moveCursor()
+  }
 
+  def select(): Unit = {
+    model.selected.action match {
+      case _: SubMenu =>
+        model = model.select()
+        drawChoice()
+      case StartScene(sceneKey) =>
+        menuScene.scene.start(sceneKey)
+    }
+  }
+
+  def back(): Unit = {
+    val updated = model.back()
+    if (updated != model) {
+      model = updated
+      drawChoice()
+    }
+  }
+
+  private def drawChoice(): Unit = {
+    visibleOptions.foreach(_.destroy())
+    visibleOptions = model.choice.options.toList.zipWithIndex.map { case(option, index) =>
+      val text = menuScene.add.text(MenuX, MenuY + index*TextSpacing, option.text, TextStyle)
+      text.setDepth(MenuScene.Depth.MenuText)
+      text
+    }
+  }
+
+  private def moveCursor(): Unit = {
+    cursor.setPosition(
+      x = MenuX + CursorOffsetX,
+      y = MenuY + CursorOffsetY + model.choice.selected * TextSpacing)
   }
 }
 
 object MenuController {
-  val x: Int = 200
-  val y: Int = 300
+  val MenuX: Int = 200
+  val MenuY: Int = 300
+
+  val TextSpacing: Int = 40
+
+  val CursorOffsetX: Int = -30
+  val CursorOffsetY: Int = 20
 
   val TextStyle: js.Object = js.Dynamic.literal(
     color = "#BB0000",
@@ -106,21 +167,20 @@ object MenuController {
   )
 }
 
-case class Menu(choice: MenuChoice, history: Seq[MenuChoice] = Nil) {
+case class MenuModel(choice: MenuChoice, history: Seq[MenuChoice] = Nil) {
 
-  def up(): Menu = copy(choice = choice.decrement())
+  def up(): MenuModel = copy(choice = choice.decrement())
 
-  def down(): Menu = copy(choice = choice.increment())
+  def down(): MenuModel = copy(choice = choice.increment())
 
-  def select(): Menu = selected.action match {
+  def select(): MenuModel = selected.action match {
     case sub: SubMenu =>
       copy(choice = MenuChoice(sub.options), history = history :+ choice)
-    case DoAction(action) =>
-      action()
+    case other =>
       this
   }
 
-  def back(): Menu = history match {
+  def back(): MenuModel = history match {
     case Nil => this
     case head :: tail =>
       copy(choice = head, history = tail)

@@ -3,7 +3,7 @@ package mood
 import mood.scenes._
 import org.scalatest.{Matchers, WordSpec}
 
-class MenuSpec extends WordSpec with Matchers {
+class MenuModelSpec extends WordSpec with Matchers {
 
   "The Menu structure" should {
 
@@ -30,20 +30,14 @@ class MenuSpec extends WordSpec with Matchers {
     "do nothing when backing out of the main menu" in new MenuScope {
       menu.back() shouldBe menu
     }
-
-    "select actions" in new MenuScope {
-      menu.down().select().select()
-      mutable shouldBe "one-one"
-    }
   }
 
   trait MenuScope {
-    var mutable: String = "untouched"
-    val menu = Menu(
+    val menu = MenuModel(
       MenuChoice(
         MenuOption("one", StartScene("scene-one")),
         MenuOption("two", SubMenu(
-          MenuOption("one-one", DoAction(() => mutable = "one-one")),
+          MenuOption("one-one", DoAction(() => Unit)),
           MenuOption("one-two", StartScene("scene-one-point-two"))
         )),
         MenuOption("three", StartScene("scene-three"))

@@ -5,7 +5,6 @@ import org.phaser.scenes.{Scene, SceneConfig}
 
 import scala.scalajs.js.annotation.ScalaJSDefined
 
-@ScalaJSDefined
 class BootScene extends Scene(BootScene.Config) {
   private val loader = new SceneLoader(this)
 

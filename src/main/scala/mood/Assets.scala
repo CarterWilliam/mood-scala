@@ -1,16 +1,15 @@
 package mood
 
-import mood.Assets.{AudioAsset, TextureAsset}
 import org.phaser.loader.LoaderPlugin.{AudioKey, TextureKey, Url}
 import org.phaser.scenes.Scene
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
-object Assets {
+case class AudioAsset(key: AudioKey, url: Url)
+case class TextureAsset(key: TextureKey, url: Url)
 
-  case class AudioAsset(key: AudioKey, url: Url)
-  case class TextureAsset(key: TextureKey, url: Url)
+object Assets {
 
   object Audio {
     val Pistol = AudioAsset("pistol", "assets/audio/guns/pistol.ogg")
