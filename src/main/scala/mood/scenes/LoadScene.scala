@@ -19,6 +19,7 @@ class LoadScene extends Scene(LoadScene.Config) {
     createLoadBar()
 
     loadImages()
+    loadSprites()
     loadAudio()
   }
 
@@ -44,8 +45,6 @@ class LoadScene extends Scene(LoadScene.Config) {
     loader.load(Assets.Textures.Clip)
     loader.load(Assets.Textures.Shotgun)
     loader.load(Assets.Textures.Chaingun)
-
-    loader.load(Assets.Textures.Bullet)
   }
 
   private def loadAudio(): Unit = {
@@ -65,6 +64,17 @@ class LoadScene extends Scene(LoadScene.Config) {
 
     loader.load(Assets.Audio.ItemPickup)
     loader.load(Assets.Audio.WeaponPickup)
+  }
+
+  private def loadSprites(): Unit = {
+    loader.load(Assets.SpriteSheets.Player)
+    loader.load(Assets.SpriteSheets.Soldier)
+    loader.load(Assets.SpriteSheets.Imp)
+
+    loader.load(Assets.Textures.Bullet)
+    loader.load(Assets.SpriteSheets.FireBall)
+
+    loader.load(Assets.SpriteSheets.ArmourBonus)
   }
 
   override def create(): Unit = {

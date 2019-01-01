@@ -1,6 +1,7 @@
 package mood
 
 import org.phaser.loader.LoaderPlugin.{AudioKey, TextureKey, Url}
+import org.phaser.loader.filetypes.ImageFrameConfig
 import org.phaser.scenes.Scene
 
 import scala.scalajs.js
@@ -8,7 +9,7 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 
 case class AudioAsset(key: AudioKey, url: Url)
 case class TextureAsset(key: TextureKey, url: Url)
-case class SpritesheetAsset(key: TextureKey, url: Url, width: Int, height: Int)
+case class SpriteSheetAsset(key: TextureKey, url: Url, frameConfig: ImageFrameConfig)
 
 object Assets {
 
@@ -45,10 +46,14 @@ object Assets {
     val Bullet = TextureAsset("bullet", "assets/images/bullet.png")
   }
 
-  object Spritesheets {
-    //    val Player = TextureAsset("player", "assets/images/player.png", { frameWidth: 60, frameHeight: 60, endFrame: 63 })
-    //    val Soldier = TextureAsset("soldier", "assets/images/soldier.png", { frameWidth: 60, frameHeight: 60, endFrame: 60 })
-    //    val Imp = TextureAsset("imp", "assets/images/imp.png", { frameWidth: 60, frameHeight: 60, endFrame: 68 })
+  object SpriteSheets {
+    val Player = SpriteSheetAsset("player", "assets/images/player.png", ImageFrameConfig(frameWidth = 60, frameHeight = 60, endFrame = 63))
+    val Soldier = SpriteSheetAsset("soldier", "assets/images/soldier.png", ImageFrameConfig(frameWidth = 60, frameHeight = 60, endFrame = 60))
+    val Imp = SpriteSheetAsset("imp", "assets/images/imp.png", ImageFrameConfig(frameWidth = 60, frameHeight = 60, endFrame = 68))
+
+    val FireBall = SpriteSheetAsset("fireball", "assets/images/fireball.png", ImageFrameConfig(frameWidth = 51, frameHeight = 51))
+
+    val ArmourBonus = SpriteSheetAsset("armour-bonus", "assets/images/items/armour-bonus.png", ImageFrameConfig(frameWidth = 16, frameHeight = 15))
   }
 }
 
@@ -57,6 +62,10 @@ class SceneLoader(scene: Scene) extends js.Object {
 
   def load(audio: AudioAsset): Unit = {
     scene.load.audio(audio.key, audio.url)
+  }
+
+  def load(spriteSheet: SpriteSheetAsset): Unit = {
+    scene.load.spritesheet(spriteSheet.key, spriteSheet.url, spriteSheet.frameConfig)
   }
 
   def load(texture: TextureAsset): Unit = {
