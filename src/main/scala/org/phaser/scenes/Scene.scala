@@ -3,6 +3,7 @@ package org.phaser.scenes
 import org.phaser.gameobjects.{GameObjectCreator, GameObjectFactory}
 import org.phaser.input.InputPlugin
 import org.phaser.loader.LoaderPlugin
+import org.phaser.physics.arcade.ArcadePhysics
 import org.phaser.scenes.Scene.{SceneData, SceneKey}
 import org.phaser.sound.BaseSoundManager
 import org.phaser.time.Clock
@@ -19,6 +20,7 @@ class Scene(config: SceneConfig) extends js.Object {
   def input: InputPlugin = js.native
   def load: LoaderPlugin = js.native
   def make: GameObjectCreator = js.native
+  def physics: ArcadePhysics = js.native
   def scene: ScenePlugin = js.native
   def sound: BaseSoundManager = js.native
   def sys: Systems[Data] = js.native

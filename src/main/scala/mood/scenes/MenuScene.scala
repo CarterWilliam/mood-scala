@@ -101,7 +101,13 @@ object MenuScene {
       images = Seq(LevelAsset("tiles-futuristic", "assets/maps/futuristic.png"))),
     initialScene = scrapyardKey,
     scenes = Seq(
-      SceneConfig(key = scrapyardKey, map = MapConfig("map-futuristic", "futuristic", "tiles-futuristic"))
+      SceneConfig(key = scrapyardKey, map = MapConfig(
+        tilemap = "map-futuristic",
+        "futuristic",
+        "tiles-futuristic",
+        tileSize = 24,
+        width = 64,
+        height = 32))
     ))
 }
 

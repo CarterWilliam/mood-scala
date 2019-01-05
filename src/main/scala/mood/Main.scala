@@ -2,7 +2,7 @@ package mood
 
 import com.google.webfontloader.WebFont
 import mood.scenes.{BootScene, LoadScene, MenuScene}
-import org.phaser.{Game, GameConfig}
+import org.phaser.{ArcadePhysicsConfig, Game, GameConfig, PhysicsConfig}
 import org.phaser.Phaser.RenderType
 
 import scala.scalajs.js
@@ -33,6 +33,9 @@ object Main {
     val config: GameConfig = GameConfig(
       renderType = RenderType.CANVAS,
       parent = Some("game-container"),
+      physics = Some(PhysicsConfig(
+        default = "arcade",
+        arcade = Some(ArcadePhysicsConfig(gravity = 0)))),
       scenes = Seq(new BootScene, new MenuScene, new LoadScene))
     new Game(config)
   }

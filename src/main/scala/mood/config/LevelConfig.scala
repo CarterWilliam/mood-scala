@@ -9,11 +9,11 @@ import scala.scalajs.js
 
 @js.annotation.ScalaJSDefined
 class LevelConfig(
-                   val key: LevelKey,
-                   val loadingImage: Option[AssetKey] = None,
-                   val assets: LevelAssets,
-                   val initialScene: GameScene.Key,
-                   val scenes: Seq[SceneConfig]) extends SceneData
+  val key: LevelKey,
+  val loadingImage: Option[AssetKey] = None,
+  val assets: LevelAssets,
+  val initialScene: GameScene.Key,
+  val scenes: Seq[SceneConfig]) extends SceneData
 
 case class LevelAssets(tilemaps: Seq[LevelAsset], images: Seq[LevelAsset])
 case class LevelAsset(key: String, url: String)
@@ -23,4 +23,11 @@ object LevelConfig {
 }
 
 case class SceneConfig(key: GameScene.Key, map: MapConfig)
-case class MapConfig(tilemap: String, tilemapName: String, image: String)
+case class MapConfig(
+  tilemap: String,
+  tilemapName: String,
+  image: String,
+  tileSize: Int,
+  width: Int,
+  height: Int,
+  scale: Int = 1)
