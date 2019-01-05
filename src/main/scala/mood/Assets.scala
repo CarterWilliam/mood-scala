@@ -1,15 +1,15 @@
 package mood
 
-import org.phaser.loader.LoaderPlugin.{AudioKey, TextureKey, Url}
+import org.phaser.loader.LoaderPlugin.{AssetKey, Url}
 import org.phaser.loader.filetypes.ImageFrameConfig
 import org.phaser.scenes.Scene
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
-case class AudioAsset(key: AudioKey, url: Url)
-case class TextureAsset(key: TextureKey, url: Url)
-case class SpriteSheetAsset(key: TextureKey, url: Url, frameConfig: ImageFrameConfig)
+case class AudioAsset(key: AssetKey, url: Url)
+case class TextureAsset(key: AssetKey, url: Url)
+case class SpriteSheetAsset(key: AssetKey, url: Url, frameConfig: ImageFrameConfig)
 
 object Assets {
 

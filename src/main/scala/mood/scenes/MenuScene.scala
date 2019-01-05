@@ -2,17 +2,22 @@ package mood.scenes
 
 import cats.data.NonEmptyList
 import mood.Assets
-import mood.scenes.MenuScene.Depth
+import mood.config.{LevelAsset, LevelAssets, LevelConfig}
+import mood.scenes.LoadScene.LoadId
+import mood.scenes.MenuScene.{Depth, MenuId}
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.gameobjects.text.Text
 import org.phaser.input.keyboard.CursorKeys
-import org.phaser.scenes.Scene.SceneKey
+import org.phaser.scenes.Scene.{NoData, SceneKey}
 import org.phaser.scenes.{Scene, SceneConfig}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.scalajs.js
 
 class MenuScene extends Scene(MenuScene.Config) {
+  override type Key = MenuId.type
+  override type Data = NoData
+
   var menu: MenuController = _
   var keyboard: CursorKeys = _
   var lastMenuEvent: Double = _
@@ -64,6 +69,7 @@ class MenuScene extends Scene(MenuScene.Config) {
 }
 
 object MenuScene {
+  case object MenuId extends SceneKey { val value = "menu" }
   val Config = SceneConfig("menu")
 
   object Depth {
@@ -80,7 +86,7 @@ object MenuScene {
         MenuOption("Not too rough.", DoAction(() => (): Unit)),
         MenuOption("Hurt me plenty.", DoAction(() => (): Unit)),
         MenuOption("Ultra-Violence.", DoAction(() => (): Unit)),
-        MenuOption("NIGHTMARE!", StartScene("loading"))
+        MenuOption("NIGHTMARE!", StartScene(LoadId))
       )),
       MenuOption("Options", DoAction(() => (): Unit)),
       MenuOption("Load Game", DoAction(() => (): Unit)),
@@ -89,9 +95,15 @@ object MenuScene {
     )
   )
 
+  val LevelOneConfig = new LevelConfig(
+    key = "level-one",
+    assets = LevelAssets(
+      tilemaps = Seq(LevelAsset("map-futuristic", "assets/maps/futuristic.json")),
+      images = Seq(LevelAsset("tiles-futuristic", "assets/maps/futuristic.png"))),
+    scenes = Nil)
 }
 
-class MenuController(menuScene: Scene) {
+class MenuController(menuScene: MenuScene) {
   import MenuController._
 
   private var model: MenuModel = MenuScene.InitialMenu
@@ -120,8 +132,8 @@ class MenuController(menuScene: Scene) {
       case _: SubMenu =>
         model = model.select()
         drawChoice()
-      case StartScene(sceneKey) =>
-        menuScene.scene.start(sceneKey)
+      case StartScene(_) =>
+        menuScene.scene.start[LoadScene](LoadId, MenuScene.LevelOneConfig)
     }
   }
 

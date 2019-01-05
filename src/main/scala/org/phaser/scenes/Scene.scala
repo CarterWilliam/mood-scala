@@ -3,7 +3,7 @@ package org.phaser.scenes
 import org.phaser.gameobjects.GameObjectFactory
 import org.phaser.input.InputPlugin
 import org.phaser.loader.LoaderPlugin
-import org.phaser.scenes.Scene.SceneKey
+import org.phaser.scenes.Scene.{SceneData, SceneKey}
 import org.phaser.sound.BaseSoundManager
 import org.phaser.time.Clock
 
@@ -12,11 +12,15 @@ import scala.scalajs.js
 @js.native
 @js.annotation.JSGlobal("Phaser.Scene")
 class Scene(config: SceneConfig) extends js.Object {
+  type Key <: SceneKey
+  type Data <: SceneData
+
   def add: GameObjectFactory = js.native
   def input: InputPlugin = js.native
   def load: LoaderPlugin = js.native
   def scene: ScenePlugin = js.native
   def sound: BaseSoundManager = js.native
+  def sys: Systems[Data] = js.native
   def time: Clock = js.native
 
   def preload(): Unit = js.native
@@ -25,7 +29,11 @@ class Scene(config: SceneConfig) extends js.Object {
 }
 
 object Scene {
-  type SceneKey = String
+  trait SceneKey { def value: String }
+  implicit def keyAsString(id: SceneKey): String = id.value
+
+  trait SceneData extends js.Object
+  trait NoData extends SceneData
 }
 
 @js.native
@@ -37,7 +45,7 @@ trait SceneConfig extends js.Object {
 
 object SceneConfig {
   def apply(
-    key: SceneKey,
+    key: String,
     active: Boolean = false,
     visible: Boolean = true
   ): SceneConfig = {

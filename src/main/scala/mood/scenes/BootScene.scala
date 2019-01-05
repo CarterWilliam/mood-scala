@@ -1,11 +1,15 @@
 package mood.scenes
 
+import mood.scenes.BootScene.BootId
+import mood.scenes.MenuScene.MenuId
 import mood.{Assets, SceneLoader}
-import org.phaser.scenes.{Scene, SceneConfig}
-
-import scala.scalajs.js.annotation.ScalaJSDefined
+import org.phaser.scenes.Scene.{NoData, SceneKey}
+import org.phaser.scenes._
 
 class BootScene extends Scene(BootScene.Config) {
+  override type Key = BootId.type
+  override type Data = NoData
+
   private val loader = new SceneLoader(this)
 
   override def preload(): Unit = {
@@ -17,15 +21,12 @@ class BootScene extends Scene(BootScene.Config) {
   }
 
   override def create(): Unit = {
-    scene.start(MenuScene.Config.key)
-  }
-
-  override def update(time: Double, delta: Double) = {
-
+    scene.start[MenuScene](MenuId)
   }
 
 }
 
 object BootScene {
   val Config = SceneConfig("boot")
+  case object BootId extends SceneKey { val value = "boot" }
 }
