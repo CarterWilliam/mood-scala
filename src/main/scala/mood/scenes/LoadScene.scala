@@ -1,19 +1,17 @@
 package mood.scenes
 
 import mood.config.LevelConfig
-import mood.scenes.BootScene.BootId
 import mood.{Assets, SceneLoader}
 import org.phaser.gameobjects.graphics.{GraphicsLineStyle, GraphicsOptions}
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig}
-
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 @ScalaJSDefined
-class LoadScene extends Scene(LoadScene.Config) {
+class LoadScene extends Scene(SceneConfig(LoadScene.Key)) {
   import LoadScene._
 
-  override type Key = LoadId.type
+  override type Key = LoadScene.Key.type
   override type Data = LevelConfig
 
   private val loader = new SceneLoader(scene = this)
@@ -29,6 +27,7 @@ class LoadScene extends Scene(LoadScene.Config) {
     loadMaps(sys.settings.data)
     loadSprites()
     loadAudio()
+    loadScenes(sys.settings.data)
   }
 
   private def createLoadBar(): Unit = {
@@ -63,7 +62,6 @@ class LoadScene extends Scene(LoadScene.Config) {
     }
   }
 
-
   private def loadSprites(): Unit = {
     loader.load(Assets.SpriteSheets.Player)
     loader.load(Assets.SpriteSheets.Soldier)
@@ -94,16 +92,20 @@ class LoadScene extends Scene(LoadScene.Config) {
     loader.load(Assets.Audio.WeaponPickup)
   }
 
+  private def loadScenes(config: LevelConfig): Unit = {
+    config.scenes.foreach { sceneConfig =>
+      this.scene.add(sceneConfig.key, new GameScene(sceneConfig))
+    }
+  }
+
   override def create(): Unit = {
-    scene.start[BootScene](BootId)
+    scene.start[GameScene](sys.settings.data.initialScene)
   }
 
 }
 
 object LoadScene {
-  case object LoadId extends SceneKey { val value = "loading" }
-
-  val Config = SceneConfig("loading")
+  case object Key extends SceneKey { val value = "loading" }
 
   val LoadBarX: Int = 200
   val LoadBarY: Int = 400

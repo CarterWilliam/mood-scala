@@ -1,13 +1,11 @@
 package mood.scenes
 
-import mood.scenes.BootScene.BootId
-import mood.scenes.MenuScene.MenuId
 import mood.{Assets, SceneLoader}
 import org.phaser.scenes.Scene.{NoData, SceneKey}
 import org.phaser.scenes._
 
-class BootScene extends Scene(BootScene.Config) {
-  override type Key = BootId.type
+class BootScene extends Scene(SceneConfig(BootScene.Key)) {
+  override type Key = BootScene.Key.type
   override type Data = NoData
 
   private val loader = new SceneLoader(this)
@@ -21,12 +19,11 @@ class BootScene extends Scene(BootScene.Config) {
   }
 
   override def create(): Unit = {
-    scene.start[MenuScene](MenuId)
+    scene.start[MenuScene](MenuScene.Key)
   }
 
 }
 
 object BootScene {
-  val Config = SceneConfig("boot")
-  case object BootId extends SceneKey { val value = "boot" }
+  case object Key extends SceneKey { val value = "boot" }
 }

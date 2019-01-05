@@ -2,20 +2,19 @@ package mood.scenes
 
 import cats.data.NonEmptyList
 import mood.Assets
-import mood.config.{LevelAsset, LevelAssets, LevelConfig}
-import mood.scenes.LoadScene.LoadId
-import mood.scenes.MenuScene.{Depth, MenuId}
+import mood.config._
+import mood.scenes.MenuScene.Depth
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.gameobjects.text.Text
 import org.phaser.input.keyboard.CursorKeys
 import org.phaser.scenes.Scene.{NoData, SceneKey}
-import org.phaser.scenes.{Scene, SceneConfig}
+import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.scalajs.js
 
-class MenuScene extends Scene(MenuScene.Config) {
-  override type Key = MenuId.type
+class MenuScene extends Scene(PhaserSceneConfig(MenuScene.Key)) {
+  override type Key = MenuScene.Key.type
   override type Data = NoData
 
   var menu: MenuController = _
@@ -69,8 +68,7 @@ class MenuScene extends Scene(MenuScene.Config) {
 }
 
 object MenuScene {
-  case object MenuId extends SceneKey { val value = "menu" }
-  val Config = SceneConfig("menu")
+  case object Key extends SceneKey { val value = "menu" }
 
   object Depth {
     val MenuBackground = 0
@@ -86,7 +84,7 @@ object MenuScene {
         MenuOption("Not too rough.", DoAction(() => (): Unit)),
         MenuOption("Hurt me plenty.", DoAction(() => (): Unit)),
         MenuOption("Ultra-Violence.", DoAction(() => (): Unit)),
-        MenuOption("NIGHTMARE!", StartScene(LoadId))
+        MenuOption("NIGHTMARE!", StartScene(Key))
       )),
       MenuOption("Options", DoAction(() => (): Unit)),
       MenuOption("Load Game", DoAction(() => (): Unit)),
@@ -95,12 +93,16 @@ object MenuScene {
     )
   )
 
+  val scrapyardKey = GameScene.Key("scrapyard")
   val LevelOneConfig = new LevelConfig(
     key = "level-one",
     assets = LevelAssets(
       tilemaps = Seq(LevelAsset("map-futuristic", "assets/maps/futuristic.json")),
       images = Seq(LevelAsset("tiles-futuristic", "assets/maps/futuristic.png"))),
-    scenes = Nil)
+    initialScene = scrapyardKey,
+    scenes = Seq(
+      SceneConfig(key = scrapyardKey, map = MapConfig("map-futuristic", "futuristic", "tiles-futuristic"))
+    ))
 }
 
 class MenuController(menuScene: MenuScene) {
@@ -133,7 +135,7 @@ class MenuController(menuScene: MenuScene) {
         model = model.select()
         drawChoice()
       case StartScene(_) =>
-        menuScene.scene.start[LoadScene](LoadId, MenuScene.LevelOneConfig)
+        menuScene.scene.start[LoadScene](LoadScene.Key, MenuScene.LevelOneConfig)
     }
   }
 
