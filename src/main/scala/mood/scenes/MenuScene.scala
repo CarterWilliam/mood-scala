@@ -107,7 +107,9 @@ object MenuScene {
         "tiles-futuristic",
         tileSize = 24,
         width = 64,
-        height = 32))
+        height = 32,
+        playerStartX = 2,
+        playerStartY = 25))
     ))
 }
 

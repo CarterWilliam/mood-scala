@@ -2,6 +2,7 @@ package mood.scenes
 
 import mood.config.{LevelConfig, SceneConfig}
 import mood.scenes.GameScene.Depth
+import mood.sprites.Player
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
 import org.phaser.tilemaps.TilemapConfig
@@ -30,6 +31,9 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
     foreground.setDepth(Depth.Foreground)
 
     physics.world.setBounds(0, 0, config.map.tileSize * config.map.width, config.map.tileSize * config.map.height)
+
+    val player = new Player(this, config.map.tileSize*config.map.playerStartX, config.map.tileSize*config.map.playerStartY)
+    cameras.main.startFollow(player, roundPixels = true)
   }
 }
 

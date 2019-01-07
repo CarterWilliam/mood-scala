@@ -1,9 +1,16 @@
 package org.phaser.physics.arcade
 
+import org.phaser.gameobjects.GameObject
+
 import scala.scalajs.js
 
 @js.native
 trait World extends js.Object {
+
+  def enable(
+    `object`: GameObject,
+    bodyType: js.UndefOr[Int] = js.undefined): World = js.native
+
   def setBounds(
     x: Int,
     y: Int,

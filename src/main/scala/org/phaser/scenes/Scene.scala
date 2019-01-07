@@ -1,5 +1,6 @@
 package org.phaser.scenes
 
+import org.phaser.cameras.twodimensional.CameraManager
 import org.phaser.gameobjects.{GameObjectCreator, GameObjectFactory}
 import org.phaser.input.InputPlugin
 import org.phaser.loader.LoaderPlugin
@@ -17,6 +18,7 @@ class Scene(config: SceneConfig) extends js.Object {
   type Data <: SceneData
 
   def add: GameObjectFactory = js.native
+  def cameras: CameraManager = js.native
   def input: InputPlugin = js.native
   def load: LoaderPlugin = js.native
   def make: GameObjectCreator = js.native

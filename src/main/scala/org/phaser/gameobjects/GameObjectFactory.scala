@@ -9,6 +9,8 @@ import scala.scalajs.js
 @js.native
 trait GameObjectFactory extends js.Object {
 
+  def existing(child: GameObject): GameObject = js.native
+
   // GraphicsFactory
   def graphics(options: GraphicsOptions = GraphicsOptions()): Graphics = js.native
 

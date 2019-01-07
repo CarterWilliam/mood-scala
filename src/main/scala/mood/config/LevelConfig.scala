@@ -30,4 +30,6 @@ case class MapConfig(
   tileSize: Int,
   width: Int,
   height: Int,
-  scale: Int = 1)
+  scale: Int = 1,
+  playerStartX: Int = 0,
+  playerStartY: Int = 0)
