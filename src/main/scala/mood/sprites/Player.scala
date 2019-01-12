@@ -3,6 +3,7 @@ package mood.sprites
 import mood.Assets
 import mood.scenes.GameScene
 import org.phaser.gameobjects.sprite.Sprite
+import org.phaser.input.keyboard.CursorKeys
 import org.phaser.scenes.Scene
 
 class Player(scene: Scene, x: Int, y: Int)
@@ -18,8 +19,8 @@ class Player(scene: Scene, x: Int, y: Int)
   body.setCollideWorldBounds()
 
   setDepth(GameScene.Depth.Sprite)
-}
 
-trait PlayerConfig {
-
+  def update(cursors: CursorKeys): Unit = {
+    anims.play("player-move-south", ignoreIfPlaying = true)
+  }
 }

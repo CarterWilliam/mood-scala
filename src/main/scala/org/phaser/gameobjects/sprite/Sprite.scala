@@ -1,7 +1,7 @@
 package org.phaser.gameobjects.sprite
 
 import org.phaser.gameobjects.GameObject
-import org.phaser.gameobjects.components.{Depth, Origin, Transform}
+import org.phaser.gameobjects.components.{Animation, Depth, Origin, Transform}
 import org.phaser.scenes.Scene
 
 import scala.scalajs.js
@@ -17,4 +17,7 @@ class Sprite(
 ) extends GameObject
   with Depth
   with Origin
-  with Transform
+  with Transform {
+
+  def anims: Animation = js.native
+}
