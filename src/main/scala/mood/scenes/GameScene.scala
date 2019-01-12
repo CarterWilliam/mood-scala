@@ -2,7 +2,7 @@ package mood.scenes
 
 import mood.animation.MoodAnimations
 import mood.config.{LevelConfig, SceneConfig}
-import mood.input.MoodInput
+import mood.input.{MoodKeyboardInput, PlayerInput}
 import mood.scenes.GameScene.Depth
 import mood.sprites.Player
 import org.phaser.scenes.Scene.SceneKey
@@ -15,7 +15,8 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
   override type Key = GameScene.Key
   override type Data = LevelConfig
 
-  var keys: MoodInput = _
+  var keys: MoodKeyboardInput = _
+  var playerInput: PlayerInput = _
   var player: Player = _
 
   override def create(): Unit = {
@@ -46,11 +47,13 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
     physics.add.collider(player, lowObstacles)
     physics.add.collider(player, highObstacles)
 
-    keys = MoodInput(input.keyboard)
+    keys = MoodKeyboardInput(input.keyboard)
+    playerInput = new PlayerInput(keys)
   }
 
   override def update(time: Double, delta: Double): Unit = {
-    player.update(keys)
+    playerInput.invalidateCaches()
+    player.update(playerInput)
   }
 }
 

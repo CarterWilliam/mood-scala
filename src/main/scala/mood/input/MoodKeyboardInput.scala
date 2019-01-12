@@ -6,7 +6,7 @@ import org.phaser.input.keyboard.keys.{Key, KeyCodes}
 import scala.scalajs.js
 
 @js.native
-trait MoodInput extends js.Object {
+trait MoodKeyboardInput extends js.Object {
   def up: Key = js.native
   def down: Key = js.native
   def left: Key = js.native
@@ -22,8 +22,8 @@ trait MoodInput extends js.Object {
   def bfg9000: Key = js.native
 }
 
-object MoodInput {
-  def apply(keyboard: KeyboardPlugin): MoodInput = {
+object MoodKeyboardInput {
+  def apply(keyboard: KeyboardPlugin): MoodKeyboardInput = {
     keyboard.addKeys(
       js.Dynamic.literal(
         up = KeyCodes.UP,
@@ -40,6 +40,6 @@ object MoodInput {
         plasmaRifle = KeyCodes.SIX,
         bfg9000 = KeyCodes.SEVEN
       )
-    ).asInstanceOf[MoodInput]
+    ).asInstanceOf[MoodKeyboardInput]
   }
 }

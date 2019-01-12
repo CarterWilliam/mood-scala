@@ -2,14 +2,14 @@ package mood.sprites
 
 import mood.Assets
 import mood.animation.MoodAnimations.Animation
-import mood.input.MoodInput
 import mood.scenes.GameScene
 import mood.sprites.Direction._
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.scenes.Scene
 import Player.Animations._
+import mood.input.PlayerInput
 import mood.sprites.Player.Action.{Firing, Normal}
-import mood.sprites.Player.{Action, State}
+import mood.sprites.Player._
 import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Never, Repeat}
 
 class Player(scene: Scene, x: Int, y: Int)
@@ -29,14 +29,16 @@ class Player(scene: Scene, x: Int, y: Int)
 
   setDepth(GameScene.Depth.Sprite)
 
-  def update(input: MoodInput): Unit = state.action match {
+  def update(input: PlayerInput): Unit = state.action match {
     case Firing =>
       whileFiring()
     case Normal =>
-      if (input.space.isDown) {
+      if (input.isFiring) {
         fire()
-      } else {
+      } else if (input.isMoving) {
         move(input)
+      } else {
+        stop()
       }
   }
 
@@ -54,64 +56,51 @@ class Player(scene: Scene, x: Int, y: Int)
     }
   }
 
-  private def move(input: MoodInput): Unit = {
-    val newDirection = direction(input)
-    newDirection.foreach(turn)
-    newDirection match {
-      case None =>
-        body.setVelocity(0, 0)
-        anims.stop()
-      case Some(North) =>
+  private def move(input: PlayerInput): Unit = {
+    if (!input.isStrafing) input.direction.foreach(turn)
+
+    input.direction foreach {
+      case North =>
         body.setVelocity(0, -velocity)
-        anims.play(MoveNorth, ignoreIfPlaying = true)
-      case Some(NorthEast) =>
+      case NorthEast =>
         body.setVelocity(diagonalVelocity, -diagonalVelocity)
-        anims.play(MoveNorthEast, ignoreIfPlaying = true)
-      case Some(East) =>
+      case East =>
         body.setVelocity(velocity, 0)
-        anims.play(MoveEast, ignoreIfPlaying = true)
-      case Some(SouthEast) =>
+      case SouthEast =>
         body.setVelocity(diagonalVelocity, diagonalVelocity)
-        anims.play(MoveSouthEast, ignoreIfPlaying = true)
-      case Some(South) =>
+      case South =>
         body.setVelocity(0, velocity)
-        anims.play(MoveSouth, ignoreIfPlaying = true)
-      case Some(SouthWest) =>
+      case SouthWest =>
         body.setVelocity(-diagonalVelocity, diagonalVelocity)
-        anims.play(MoveSouthWest, ignoreIfPlaying = true)
-      case Some(West) =>
+      case West =>
         body.setVelocity(-velocity, 0)
-        anims.play(MoveWest, ignoreIfPlaying = true)
-      case Some(NorthWest) =>
+      case NorthWest =>
         body.setVelocity(-diagonalVelocity, -diagonalVelocity)
+    }
+
+    state.direction match {
+      case North =>
+        anims.play(MoveNorth, ignoreIfPlaying = true)
+      case NorthEast =>
+        anims.play(MoveNorthEast, ignoreIfPlaying = true)
+      case East =>
+        anims.play(MoveEast, ignoreIfPlaying = true)
+      case SouthEast =>
+        anims.play(MoveSouthEast, ignoreIfPlaying = true)
+      case South =>
+        anims.play(MoveSouth, ignoreIfPlaying = true)
+      case SouthWest =>
+        anims.play(MoveSouthWest, ignoreIfPlaying = true)
+      case West =>
+        anims.play(MoveWest, ignoreIfPlaying = true)
+      case NorthWest =>
         anims.play(MoveNorthWest, ignoreIfPlaying = true)
     }
   }
 
-  private def directionVector(input: MoodInput): (Int, Int) = {
-    var movingX = 0
-    var movingY = 0
-
-    if (input.left.isDown) movingX -= 1
-    if (input.right.isDown) movingX += 1
-    if (input.up.isDown) movingY += 1
-    if (input.down.isDown) movingY -= 1
-
-    (movingX, movingY)
-  }
-
-  private def direction(input: MoodInput): Option[Direction.Direction] = {
-    directionVector(input) match {
-      case (0, 0) => None
-      case (0, 1) => Some(North)
-      case (1, 1) => Some(NorthEast)
-      case (1, 0) => Some(East)
-      case (1, -1) => Some(SouthEast)
-      case (0, -1) => Some(South)
-      case (-1, -1) => Some(SouthWest)
-      case (-1, 0) => Some(West)
-      case (-1, 1) => Some(NorthWest)
-    }
+  private def stop(): Unit = {
+    anims.stop()
+    body.stop()
   }
 
   private def switchState(action: Action): Unit = {
