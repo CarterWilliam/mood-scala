@@ -7,9 +7,9 @@ import scala.scalajs.js
 
 @js.native
 trait StaticTilemapLayer extends GameObject
-  with Depth
-  with Origin
-  with Transform {
+  with Depth[StaticTilemapLayer]
+  with Origin[StaticTilemapLayer]
+  with Transform[StaticTilemapLayer] {
 
   def setCollisionByProperty(
     properties: js.Object,

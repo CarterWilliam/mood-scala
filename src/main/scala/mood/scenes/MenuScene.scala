@@ -5,7 +5,7 @@ import mood.Assets
 import mood.config._
 import mood.scenes.MenuScene.Depth
 import org.phaser.gameobjects.sprite.Sprite
-import org.phaser.gameobjects.text.Text
+import org.phaser.gameobjects.text.{Style, Text}
 import org.phaser.input.keyboard.CursorKeys
 import org.phaser.scenes.Scene.{NoData, SceneKey}
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
@@ -180,12 +180,11 @@ object MenuController {
   val CursorOffsetX: Int = -30
   val CursorOffsetY: Int = 20
 
-  val TextStyle: js.Object = js.Dynamic.literal(
-    color = "#BB0000",
-    align = "left",
-    font = "28pt Doom",
-    stroke = "#000000",
-    strokeThickness = 4
+  val TextStyle: Style = Style(
+    color = Some("#BB0000"),
+    font = Some("28pt Doom"),
+    stroke = Some("#000000"),
+    strokeThickness = Some(4)
   )
 }
 

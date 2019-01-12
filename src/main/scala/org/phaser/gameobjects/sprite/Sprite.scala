@@ -15,9 +15,9 @@ class Sprite(
   texture: String,
   frame: js.UndefOr[String] = js.undefined
 ) extends GameObject
-  with Depth
-  with Origin
-  with Transform {
+  with Depth[Sprite]
+  with Origin[Sprite]
+  with Transform[Sprite] {
 
   def anims: Animation = js.native
 }

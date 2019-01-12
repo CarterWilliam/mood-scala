@@ -40,6 +40,7 @@ class Scene(config: SceneConfig) extends js.Object {
 object Scene {
   trait SceneKey { def value: String }
   implicit def keyAsString(id: SceneKey): String = id.value
+  implicit def keyAsStringOrUndefined(id: SceneKey): js.UndefOr[String] = id.value
 
   trait SceneData extends js.Object
   trait NoData extends SceneData

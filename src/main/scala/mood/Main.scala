@@ -20,8 +20,8 @@ object Main {
   def loadFonts(andThen: () => Unit): Unit = {
     val config = js.Dynamic.literal(
       custom = js.Dynamic.literal(
-        families = js.Array("Doom"),
-        urls = js.Array("css/doom-font.css")
+        families = js.Array("Doom", "Square"),
+        urls = js.Array("css/doom-font.css", "css/square-font.css")
       ),
       active = andThen
     )

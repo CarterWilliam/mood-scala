@@ -2,14 +2,14 @@ package org.phaser.gameobjects
 
 import org.phaser.gameobjects.graphics.{Graphics, GraphicsOptions}
 import org.phaser.gameobjects.sprite.Sprite
-import org.phaser.gameobjects.text.Text
+import org.phaser.gameobjects.text.{Style, Text}
 
 import scala.scalajs.js
 
 @js.native
 trait GameObjectFactory extends js.Object {
 
-  def existing(child: GameObject): GameObject = js.native
+  def existing[GO <: GameObject](child: GO): GO = js.native
 
   // GraphicsFactory
   def graphics(options: GraphicsOptions = GraphicsOptions()): Graphics = js.native
@@ -22,6 +22,6 @@ trait GameObjectFactory extends js.Object {
     x: Int,
     y: Int,
     text: String,
-    style: js.UndefOr[js.Object] = js.undefined
+    style: js.UndefOr[Style] = js.undefined
   ): Text = js.native
 }

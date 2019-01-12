@@ -7,8 +7,8 @@ import scala.scalajs.js
 
 @js.native
 trait Graphics extends GameObject
-  with Depth
-  with Transform {
+  with Depth[Graphics]
+  with Transform[Graphics] {
 
   def clear(): Graphics = js.native
   def fillStyle(color: Int, alpha: Double = 1.0): Graphics = js.native
