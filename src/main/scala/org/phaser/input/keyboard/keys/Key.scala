@@ -1,4 +1,4 @@
-package org.phaser.input.keyboard
+package org.phaser.input.keyboard.keys
 
 import scala.scalajs.js
 

@@ -18,7 +18,7 @@ trait GenerateFrameNumbersConfig extends js.Object {
   def end: Int
   def first: Boolean
   def outputArray: js.Array[AnimationFrameConfig]
-  def frames: Boolean
+  def frames: Boolean | js.Array[Int]
 }
 
 object GenerateFrameNumbersConfig {
@@ -27,14 +27,14 @@ object GenerateFrameNumbersConfig {
     end: Int = -1,
     first: Boolean = false,
     outputArray: Seq[AnimationFrameConfig] = Nil,
-    frames: Boolean = false
+    frames: Option[Seq[Int]] = None
   ): GenerateFrameNumbersConfig = {
     js.Dynamic.literal(
       start = start,
       end = end,
       first = first,
       outputArray = outputArray.toJSArray,
-      frames = frames
+      frames = frames.fold[js.Any](false)(_.toJSArray)
     ).asInstanceOf[GenerateFrameNumbersConfig]
   }
 }

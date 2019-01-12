@@ -1,5 +1,7 @@
 package org.phaser.animations
 
+import org.phaser.animations.AnimationConfig.RepeatConfig.{Never, Repeat, RepeatConfig}
+
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 
@@ -31,7 +33,7 @@ object AnimationConfig {
     duration: Option[Int] = None,
     skipMissedFrames: Boolean = false,
     delay: Int = 0,
-    repeat: Int = 0,
+    repeat: RepeatConfig = Never,
     repeatDelay: Int = 0,
     yoyo: Boolean = false,
     showOnStart: Boolean = false,
@@ -45,11 +47,19 @@ object AnimationConfig {
       duration = duration.orUndefined,
       skipMissedFrames = skipMissedFrames,
       delay = delay,
-      repeat = repeat,
+      repeat = repeat.times,
       repeatDelay = repeatDelay,
       yoyo = yoyo,
       showOnStart = showOnStart,
       hideOnComplete = hideOnComplete,
     ).asInstanceOf[AnimationConfig]
   }
+
+  object RepeatConfig {
+    sealed trait RepeatConfig { private[AnimationConfig] def times: Int }
+    case object Forever extends RepeatConfig { val times = -1 }
+    case object Never extends RepeatConfig { val times = 0 }
+    case class Repeat(times: Int) extends RepeatConfig
+  }
+
 }

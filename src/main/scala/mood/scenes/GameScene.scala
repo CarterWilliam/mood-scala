@@ -1,11 +1,12 @@
 package mood.scenes
 
 import mood.Assets
+import mood.animation.MoodAnimations
 import mood.config.{LevelConfig, SceneConfig}
+import mood.input.MoodInput
 import mood.scenes.GameScene.Depth
 import mood.sprites.Player
 import org.phaser.animations.{AnimationConfig, GenerateFrameNumbersConfig}
-import org.phaser.input.keyboard.CursorKeys
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
 import org.phaser.tilemaps.TilemapConfig
@@ -16,10 +17,8 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
   override type Key = GameScene.Key
   override type Data = LevelConfig
 
-  var keys: CursorKeys = _
+  var keys: MoodInput = _
   var player: Player = _
-
-  var killAfter: Int = 10
 
   override def create(): Unit = {
     val tilemap = make.tilemap(TilemapConfig(key = config.map.tilemap))
@@ -43,18 +42,9 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
     player = new Player(this, config.map.tileSize*config.map.playerStartX, config.map.tileSize*config.map.playerStartY)
     cameras.main.startFollow(player, roundPixels = true)
 
-    createAnimations()
+    MoodAnimations.createAnimations(anims)
 
-    keys = input.keyboard.createCursorKeys()
-  }
-
-  private def createAnimations(): Unit = {
-    anims.create(AnimationConfig(
-      key = "player-move-south",
-      frames = anims.generateFrameNumbers(Assets.SpriteSheets.Player.key, GenerateFrameNumbersConfig(start = 0, end = 3)),
-      frameRate = Some(10),
-      repeat = -1
-    ))
+    keys = MoodInput(input.keyboard)
   }
 
   override def update(time: Double, delta: Double): Unit = {

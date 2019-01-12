@@ -1,9 +1,12 @@
 package org.phaser.input.keyboard
 
+import org.phaser.input.keyboard.keys.Key
+
 import scala.scalajs.js
 
 @js.native
 trait KeyboardPlugin extends js.Object {
+  def addKeys(keys: js.Object): js.Object
   def createCursorKeys(): CursorKeys = js.native
 }
 
