@@ -49,6 +49,11 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
 
     keys = MoodKeyboardInput(input.keyboard)
     playerInput = new PlayerInput(keys)
+
+    val hud = scene.get[Hud](Hud.Key.value)
+    hud.startWatching(this)
+    this.scene.moveAbove(this.config.key, Hud.Key.value)
+    this.scene.launch(Hud.Key.value)
   }
 
   override def update(time: Double, delta: Double): Unit = {
