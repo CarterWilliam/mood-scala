@@ -1,12 +1,10 @@
 package mood.scenes
 
-import mood.Assets
 import mood.animation.MoodAnimations
 import mood.config.{LevelConfig, SceneConfig}
 import mood.input.MoodInput
 import mood.scenes.GameScene.Depth
 import mood.sprites.Player
-import org.phaser.animations.{AnimationConfig, GenerateFrameNumbersConfig}
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
 import org.phaser.tilemaps.TilemapConfig
@@ -43,6 +41,10 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
     cameras.main.startFollow(player, roundPixels = true)
 
     MoodAnimations.createAnimations(anims)
+
+    physics.add.collider(player, floor)
+    physics.add.collider(player, lowObstacles)
+    physics.add.collider(player, highObstacles)
 
     keys = MoodInput(input.keyboard)
   }

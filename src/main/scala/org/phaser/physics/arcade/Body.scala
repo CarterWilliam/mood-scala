@@ -10,4 +10,5 @@ trait Body extends js.Object {
   def setVelocity(x: Double, y: Double): Body = js.native
   def setVelocityX(value: Double): Body = js.native
   def setVelocityY(value: Double): Body = js.native
+  def stop(): Body = js.native
 }
