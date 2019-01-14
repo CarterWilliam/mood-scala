@@ -5,6 +5,8 @@ import mood.config.{LevelConfig, SceneConfig}
 import mood.input.{MoodKeyboardInput, PlayerInput}
 import mood.scenes.GameScene.Depth
 import mood.sprites.Player
+import mood.sprites.projectiles.ProjectilesGroup
+import mood.util.Coordinates
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
 import org.phaser.tilemaps.TilemapConfig
@@ -38,7 +40,13 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
 
     physics.world.setBounds(0, 0, config.map.tileSize * config.map.width, config.map.tileSize * config.map.height)
 
-    player = new Player(this, config.map.tileSize*config.map.playerStartX, config.map.tileSize*config.map.playerStartY)
+    val playerProjectiles = new ProjectilesGroup(this)
+    player = new Player(
+      scene = this,
+      origin = Coordinates(
+        x = config.map.tileSize*config.map.playerStartX,
+        y = config.map.tileSize*config.map.playerStartY),
+      projectiles = playerProjectiles)
     cameras.main.startFollow(player, roundPixels = true)
 
     MoodAnimations.createAnimations(anims)

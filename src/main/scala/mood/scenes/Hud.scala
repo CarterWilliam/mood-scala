@@ -46,7 +46,9 @@ class Hud extends Scene(Hud.Config) {
   }
 
   def startWatching(scene: GameScene): Unit = {
-
+    scene.events.on("healthChanged", { newHealth: Int =>
+      health.setText(s"${newHealth.toString}%")
+    })
   }
 
 }

@@ -10,8 +10,8 @@ import scala.scalajs.js
 @js.annotation.JSGlobal("Phaser.GameObjects.Sprite")
 class Sprite(
   scene: Scene,
-  x: Int,
-  y: Int,
+  x: Double,
+  y: Double,
   texture: String,
   frame: js.UndefOr[String] = js.undefined
 ) extends GameObject

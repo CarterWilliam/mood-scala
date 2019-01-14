@@ -10,10 +10,12 @@ import Player.Animations._
 import mood.input.PlayerInput
 import mood.sprites.Player.Action.{Firing, Normal}
 import mood.sprites.Player._
+import mood.sprites.projectiles.ProjectilesGroup
+import mood.util.Coordinates
 import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Never, Repeat}
 
-class Player(scene: Scene, x: Int, y: Int)
-  extends Sprite(scene, x, y, Assets.SpriteSheets.Player.key) {
+class Player(scene: Scene, origin: Coordinates, projectiles: ProjectilesGroup)
+  extends Sprite(scene, origin.x, origin.y, Assets.SpriteSheets.Player.key) {
 
   private val velocity: Int = 160
   private val diagonalVelocity: Double = Math.floor(velocity / Math.sqrt(2))
@@ -44,6 +46,8 @@ class Player(scene: Scene, x: Int, y: Int)
 
   private def fire(): Unit = {
     body.stop()
+    projectiles.add(Coordinates(x, y), state.direction.radians)
+    scene.sound.play("pistol")
 
     val shootKey = s"player-shoot-${state.direction.toString.toLowerCase}"
     anims.play(shootKey, ignoreIfPlaying = true)
@@ -148,13 +152,13 @@ object Player {
 }
 
 object Direction {
-  sealed trait Direction
-  case object North extends Direction
-  case object NorthEast extends Direction
-  case object East extends Direction
-  case object SouthEast extends Direction
-  case object South extends Direction
-  case object SouthWest extends Direction
-  case object West extends Direction
-  case object NorthWest extends Direction
+  sealed trait Direction { def radians: Double }
+  case object North extends Direction { val radians: Double = -Math.PI / 2 }
+  case object NorthEast extends Direction { val radians: Double = -Math.PI / 4 }
+  case object East extends Direction { val radians: Double = 0 }
+  case object SouthEast extends Direction { val radians: Double = Math.PI / 4 }
+  case object South extends Direction { val radians: Double = Math.PI / 2 }
+  case object SouthWest extends Direction { val radians: Double = 3*Math.PI / 4 }
+  case object West extends Direction { val radians: Double = Math.PI }
+  case object NorthWest extends Direction { val radians: Double = -3*Math.PI / 4 }
 }

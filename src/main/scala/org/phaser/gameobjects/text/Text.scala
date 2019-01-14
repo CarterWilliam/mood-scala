@@ -17,6 +17,7 @@ class Text(scene: Scene, x: Int, y: Int, text: String, style: Style) extends Gam
 
   def setColor(color: Color): Text = js.native
   def setStyle(style: Style): Text = js.native
+  def setText(value: String): Text = js.native
 }
 
 @js.native
