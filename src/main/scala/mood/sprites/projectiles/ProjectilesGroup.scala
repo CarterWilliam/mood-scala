@@ -5,7 +5,7 @@ import mood.util.Coordinates
 import org.phaser.gameobjects.group.Group
 import org.phaser.scenes.Scene
 
-class ProjectilesGroup(scene: Scene) extends Group(scene) {
+class ProjectilesGroup(scene: Scene) extends Group[Projectile](scene) {
 
   def add(origin: Coordinates, direction: Double): Projectile = {
     val config = ProjectileConfig(

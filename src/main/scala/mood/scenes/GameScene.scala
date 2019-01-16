@@ -5,6 +5,7 @@ import mood.config.{LevelConfig, SceneConfig}
 import mood.input.{MoodKeyboardInput, PlayerInput}
 import mood.scenes.GameScene.Depth
 import mood.sprites.Player
+import mood.sprites.enimies.{EnemiesGroup, Enemy}
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates
 import org.phaser.scenes.Scene.SceneKey
@@ -20,6 +21,7 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
   var keys: MoodKeyboardInput = _
   var playerInput: PlayerInput = _
   var player: Player = _
+  var enemies: EnemiesGroup = _
 
   override def create(): Unit = {
     val tilemap = make.tilemap(TilemapConfig(key = config.map.tilemap))
@@ -40,7 +42,7 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
 
     physics.world.setBounds(0, 0, config.map.tileSize * config.map.width, config.map.tileSize * config.map.height)
 
-    val playerProjectiles = new ProjectilesGroup(this)
+    val playerProjectiles = new ProjectilesGroup(scene = this)
     player = new Player(
       scene = this,
       origin = Coordinates(
@@ -50,6 +52,10 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
     cameras.main.startFollow(player, roundPixels = true)
 
     MoodAnimations.createAnimations(anims)
+
+    val enemyProjectiles = new ProjectilesGroup(scene = this)
+    enemies = new EnemiesGroup(scene = this, enemyProjectiles)
+    enemies.add(Enemy.Config("soldier"), Coordinates(config.map.tileSize*10, config.map.tileSize*25))
 
     physics.add.collider(player, floor)
     physics.add.collider(player, lowObstacles)
@@ -67,6 +73,7 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
   override def update(time: Double, delta: Double): Unit = {
     playerInput.invalidateCaches()
     player.update(playerInput)
+    enemies.getChildren().foreach(_.update())
   }
 }
 

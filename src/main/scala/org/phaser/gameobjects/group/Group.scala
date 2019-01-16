@@ -9,15 +9,17 @@ import scala.scalajs.js.JSConverters._
 
 @js.native
 @js.annotation.JSGlobal("Phaser.GameObjects.Group")
-class Group(scene: Scene,
-            children: js.UndefOr[Seq[GameObject]] = js.undefined,
-            config: js.UndefOr[GroupConfig] = js.undefined) extends js.Object {
+class Group[GO <: GameObject](scene: Scene,
+                              children: js.UndefOr[Seq[GO]] = js.undefined,
+                              config: js.UndefOr[GroupConfig] = js.undefined) extends js.Object {
 
-  def add(child: GameObject, addToScene: Boolean): Group = js.native
+  def add(child: GameObject, addToScene: Boolean): Group[GO] = js.native
+
+  def getChildren(): js.Array[GO] = js.native
 
   def remove(child: GameObject,
              removeFromScene: Boolean = false,
-             destroyChild: Boolean = false): Group = js.native
+             destroyChild: Boolean = false): Group[GO] = js.native
 }
 
 @js.native
