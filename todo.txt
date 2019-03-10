@@ -1,0 +1,5 @@
+# game
+- enemy health - killable component?
+- enemy attacks player
+- projectiles hit enemy
+- blood particle emitter on impact
