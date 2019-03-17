@@ -1,5 +1,7 @@
 # game
 - enemy health - killable component?
 - enemy attacks player
-- projectiles hit enemy
 - blood particle emitter on impact
+- sealerate
+- onEvent in library
+- JSON config

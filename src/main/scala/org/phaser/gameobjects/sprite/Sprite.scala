@@ -1,5 +1,6 @@
 package org.phaser.gameobjects.sprite
 
+import org.phaser.events.EventEmitter
 import org.phaser.gameobjects.GameObject
 import org.phaser.gameobjects.components.{Animation, Depth, Origin, Transform}
 import org.phaser.scenes.Scene
@@ -20,4 +21,14 @@ class Sprite(
   with Transform[Sprite] {
 
   def anims: Animation = js.native
+}
+
+object Sprite {
+  class SpriteExtension(sprite: Sprite) {
+    def onAnimationComplete(f: => Unit): EventEmitter = {
+      sprite.on("animationcomplete", { _: Any => f })
+    }
+  }
+
+  implicit def extend(sprite: Sprite): SpriteExtension = new SpriteExtension(sprite)
 }

@@ -1,7 +1,9 @@
 package mood.sprites.enemies
 
+import mood.Assets.Audio
 import mood.animation.MoodAnimations.Animation
 import mood.sprites.components.Killable
+import mood.sprites.components.Killable.KillableConfig
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates
 import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Never}
@@ -18,12 +20,12 @@ class Enemy(scene: Scene,
 
   anims.play(s"${config.key}-passive")
 
-  val killable: Killable = new Killable(this, 5, { _: Sprite =>
-    anims.play(Enemy.Animations.Die.key)
-    on("animationcomplete", { () =>
-      body.destroy()
-    })
-  })
+  val killable: Killable = new Killable(this, KillableConfig(
+    maxHealth = 11,
+    painAudioKey = Audio.SoldierHurt.key,
+    deathAudioKey = Audio.SoldierDie.key,
+    deathAnimationKey = Enemy.Animations.Die.key
+  ))
 
   def update() = {
 

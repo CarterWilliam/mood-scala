@@ -23,7 +23,8 @@ class Projectile(scene: Scene,
       body.stop()
       group.remove(this)
       anims.play(explosionAnimationKey)
-      on("animationComplete", { () => destroy() })
+      body.destroy()
+      this.onAnimationComplete { this.destroy() }
     case None =>
       destroy()
   }
