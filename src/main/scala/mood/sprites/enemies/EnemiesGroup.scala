@@ -1,4 +1,4 @@
-package mood.sprites.enimies
+package mood.sprites.enemies
 
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates

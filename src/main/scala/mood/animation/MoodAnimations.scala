@@ -1,9 +1,8 @@
 package mood.animation
 
-import mood.Assets
 import mood.animation.MoodAnimations.Animation.AnimationKey
 import mood.sprites.Player
-import mood.sprites.enimies.Enemy
+import mood.sprites.enemies.Enemy
 import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Repeat, RepeatConfig}
 import org.phaser.animations.{AnimationConfig, AnimationManager, GenerateFrameNumbersConfig}
 import org.phaser.loader.LoaderPlugin.AssetKey
@@ -17,7 +16,7 @@ object MoodAnimations {
 
   def createAnimations(anims: AnimationManager): Unit = {
     Player.Animations.all.foreach(createAnimation(anims, "player"))
-    Seq(Enemy.Animations.Passive).foreach(createAnimation(anims, "soldier"))
+    Enemy.Animations.all.foreach(createAnimation(anims, "soldier"))
   }
 
   private def createAnimation(anims: AnimationManager, assetKey: AssetKey)(animation: Animation): Unit = {

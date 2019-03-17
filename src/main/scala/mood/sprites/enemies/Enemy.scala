@@ -1,6 +1,7 @@
-package mood.sprites.enimies
+package mood.sprites.enemies
 
 import mood.animation.MoodAnimations.Animation
+import mood.sprites.components.Killable
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates
 import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Never}
@@ -13,7 +14,16 @@ class Enemy(scene: Scene,
             config: Enemy.Config,
             projectiles: ProjectilesGroup) extends Sprite(scene, origin.x, origin.y, config.key) {
 
+  scene.physics.world.enable(this)
+
   anims.play(s"${config.key}-passive")
+
+  val killable: Killable = new Killable(this, 5, { _: Sprite =>
+    anims.play(Enemy.Animations.Die.key)
+    on("animationcomplete", { () =>
+      body.destroy()
+    })
+  })
 
   def update() = {
 
@@ -24,7 +34,8 @@ class Enemy(scene: Scene,
 object Enemy {
 
   case class Config(
-    key: AssetKey)
+    key: AssetKey,
+    health: Int)
 
   object Animations {
     val Passive = Animation("soldier-passive", Seq(0, 2), Forever, frameRate = 2)
@@ -55,6 +66,37 @@ object Enemy {
     val HitSouthWest = Animation("soldier-hit-southwest", Seq(13), Never)
     val HitWest = Animation("soldier-hit-west", Seq(20), Never)
     val HitNorthWest = Animation("soldier-hit-northwest", Seq(27), Never)
+
+    val Die = Animation("soldier-die", 56 to 61, Never)
+
+    val all = Seq(
+      Passive,
+      MoveNorth,
+      MoveNorthEast,
+      MoveEast,
+      MoveSouthEast,
+      MoveSouth,
+      MoveSouthWest,
+      MoveWest,
+      MoveNorthWest,
+      ShootNorth,
+      ShootNorthEast,
+      ShootEast,
+      ShootSouthEast,
+      ShootSouth,
+      ShootSouthWest,
+      ShootWest,
+      ShootNorthWest,
+      HitNorth,
+      HitNorthEast,
+      HitEast,
+      HitSouthEast,
+      HitSouth,
+      HitSouthWest,
+      HitWest,
+      HitNorthWest,
+      Die
+    )
   }
 
 }

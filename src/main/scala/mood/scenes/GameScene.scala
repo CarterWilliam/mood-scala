@@ -5,12 +5,12 @@ import mood.config.{LevelConfig, SceneConfig}
 import mood.input.{MoodKeyboardInput, PlayerInput}
 import mood.scenes.GameScene.Depth
 import mood.sprites.Player
-import mood.sprites.enimies.{EnemiesGroup, Enemy}
-import mood.sprites.projectiles.ProjectilesGroup
+import mood.sprites.enemies.{EnemiesGroup, Enemy}
+import mood.sprites.projectiles.{Projectile, ProjectilesGroup}
 import mood.util.Coordinates
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
-import org.phaser.tilemaps.TilemapConfig
+import org.phaser.tilemaps.{StaticTilemapLayer, TilemapConfig}
 
 import scala.scalajs.js
 
@@ -55,11 +55,17 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
 
     val enemyProjectiles = new ProjectilesGroup(scene = this)
     enemies = new EnemiesGroup(scene = this, enemyProjectiles)
-    enemies.add(Enemy.Config("soldier"), Coordinates(config.map.tileSize*10, config.map.tileSize*25))
+    enemies.add(Enemy.Config("soldier", health = 5), Coordinates(config.map.tileSize*10, config.map.tileSize*25))
 
-    physics.add.collider(player, floor)
-    physics.add.collider(player, lowObstacles)
-    physics.add.collider(player, highObstacles)
+    physics.add.collider[Player, StaticTilemapLayer](player, floor)
+    physics.add.collider[Player, StaticTilemapLayer](player, lowObstacles)
+    physics.add.collider[Player, StaticTilemapLayer](player, highObstacles)
+
+    val enemyCollideProjectile: js.Function2[Projectile, Enemy, Unit] = (projectile, enemy) => {
+      enemy.killable.takeDamage(projectile.config.damage)
+      projectile.impact()
+    }
+    physics.add.collider[Projectile, Enemy](playerProjectiles, enemies, enemyCollideProjectile)
 
     keys = MoodKeyboardInput(input.keyboard)
     playerInput = new PlayerInput(keys)
