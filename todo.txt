@@ -1,7 +1,11 @@
 # game
-- enemy health - killable component?
-- enemy attacks player
-- blood particle emitter on impact
-- sealerate
-- onEvent in library
 - JSON config
+- enemy attacks player
+ - moves to player
+  - path finding
+ - fires at player
+- enemy chacha state
+- sealerate ?
+- onEvent in library
+- phaser update to 3.17.0
+- blood particle emitter on impact

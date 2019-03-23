@@ -2,13 +2,16 @@ package mood.sprites.enemies
 
 import mood.Assets.Audio
 import mood.animation.MoodAnimations.Animation
+import mood.sprites.Player
 import mood.sprites.components.Killable
 import mood.sprites.components.Killable.KillableConfig
+import mood.sprites.enemies.Enemy._
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates
 import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Never}
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.loader.LoaderPlugin.AssetKey
+import org.phaser.math.Distance
 import org.phaser.scenes.Scene
 
 class Enemy(scene: Scene,
@@ -16,18 +19,35 @@ class Enemy(scene: Scene,
             config: Enemy.Config,
             projectiles: ProjectilesGroup) extends Sprite(scene, origin.x, origin.y, config.key) {
 
+  private var state: State = Passive
+
   scene.physics.world.enable(this)
 
   anims.play(s"${config.key}-passive")
 
   val killable: Killable = new Killable(this, KillableConfig(
     maxHealth = 11,
-    painAudioKey = Audio.SoldierHurt.key,
-    deathAudioKey = Audio.SoldierDie.key,
-    deathAnimationKey = Enemy.Animations.Die.key
+    painAudioKey = config.audio.hurt,
+    deathAudioKey = config.audio.die,
+    deathAnimationKey = Enemy.Animations.Die.key,
+    onDeath = { _ => state = Dead }
   ))
 
-  def update() = {
+  def update(player: Player): Unit = state match {
+    case Passive => passiveUpdate(player)
+    case Aggressive => aggressiveUpdate(player)
+    case ChaCha => (): Unit
+    case Dead => (): Unit
+  }
+
+  private def passiveUpdate(player: Player): Unit = {
+    if (Distance.Between(x, y, player.x, player.y) < config.sightRadius) {
+      scene.sound.play(config.audio.sight)
+      state = Aggressive
+    }
+  }
+
+  private def aggressiveUpdate(player: Player): Unit = {
 
   }
 
@@ -37,7 +57,17 @@ object Enemy {
 
   case class Config(
     key: AssetKey,
-    health: Int)
+    health: Int,
+    audio: Audio,
+    sightRadius: Int = 100)
+
+  case class Audio(sight: AssetKey, hurt: AssetKey, die: AssetKey, fire: AssetKey)
+
+  sealed trait State
+  case object Passive extends State
+  case object Aggressive extends State
+  case object ChaCha extends State
+  case object Dead extends State // TODO: replace sprite with image and remove from game
 
   object Animations {
     val Passive = Animation("soldier-passive", Seq(0, 2), Forever, frameRate = 2)

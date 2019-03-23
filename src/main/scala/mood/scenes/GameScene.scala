@@ -1,5 +1,6 @@
 package mood.scenes
 
+import mood.Assets.Audio
 import mood.animation.MoodAnimations
 import mood.config.{LevelConfig, SceneConfig}
 import mood.input.{MoodKeyboardInput, PlayerInput}
@@ -55,7 +56,12 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
 
     val enemyProjectiles = new ProjectilesGroup(scene = this)
     enemies = new EnemiesGroup(scene = this, enemyProjectiles)
-    enemies.add(Enemy.Config("soldier", health = 5), Coordinates(config.map.tileSize*10, config.map.tileSize*25))
+    val soldierAudio = Enemy.Audio(
+      sight = Audio.SoldierSight.key,
+      hurt = Audio.SoldierHurt.key,
+      die = Audio.SoldierDie.key,
+      fire = Audio.Pistol.key)
+    enemies.add(Enemy.Config("soldier", health = 5, soldierAudio), Coordinates(config.map.tileSize*10, config.map.tileSize*25))
 
     physics.add.collider[Player, StaticTilemapLayer](player, floor)
     physics.add.collider[Player, StaticTilemapLayer](player, lowObstacles)
@@ -79,7 +85,7 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
   override def update(time: Double, delta: Double): Unit = {
     playerInput.invalidateCaches()
     player.update(playerInput)
-    enemies.getChildren().foreach(_.update())
+    enemies.getChildren().foreach(_.update(player))
   }
 }
 
