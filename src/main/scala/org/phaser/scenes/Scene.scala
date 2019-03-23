@@ -2,6 +2,7 @@ package org.phaser.scenes
 
 import org.phaser.Game
 import org.phaser.animations.AnimationManager
+import org.phaser.cache.CacheManager
 import org.phaser.cameras.twodimensional.CameraManager
 import org.phaser.events.EventEmitter
 import org.phaser.gameobjects.{GameObjectCreator, GameObjectFactory}
@@ -22,6 +23,7 @@ class Scene(config: SceneConfig) extends js.Object {
 
   def add: GameObjectFactory = js.native
   def anims: AnimationManager = js.native
+  def cache: CacheManager = js.native
   def cameras: CameraManager = js.native
   def events: EventEmitter = js.native
   def game: Game = js.native

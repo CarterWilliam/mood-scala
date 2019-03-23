@@ -16,6 +16,8 @@ class BootScene extends Scene(SceneConfig(BootScene.Key)) {
     loader.load(Assets.Textures.MenuSkull)
 
     loader.load(Assets.Audio.Pistol)
+
+    load.text("game-config", "assets/config/game.json")
   }
 
   override def create(): Unit = {

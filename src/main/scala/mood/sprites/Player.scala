@@ -124,7 +124,6 @@ object Player {
   object Action {
     case object Normal extends Action
     case object Firing extends Action
-    case object Dead extends Action
   }
 
   object Animations {

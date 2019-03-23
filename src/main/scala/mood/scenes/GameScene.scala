@@ -1,8 +1,7 @@
 package mood.scenes
 
-import mood.Assets.Audio
 import mood.animation.MoodAnimations
-import mood.config.{LevelConfig, SceneConfig}
+import mood.config.{GameConfig, LevelConfig, SceneConfig}
 import mood.input.{MoodKeyboardInput, PlayerInput}
 import mood.scenes.GameScene.Depth
 import mood.sprites.Player
@@ -15,7 +14,7 @@ import org.phaser.tilemaps.{StaticTilemapLayer, TilemapConfig}
 
 import scala.scalajs.js
 
-class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)) {
+class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(PhaserSceneConfig(config.key)) {
   override type Key = GameScene.Key
   override type Data = LevelConfig
 
@@ -55,13 +54,8 @@ class GameScene(config: SceneConfig) extends Scene(PhaserSceneConfig(config.key)
     MoodAnimations.createAnimations(anims)
 
     val enemyProjectiles = new ProjectilesGroup(scene = this)
-    enemies = new EnemiesGroup(scene = this, enemyProjectiles)
-    val soldierAudio = Enemy.Audio(
-      sight = Audio.SoldierSight.key,
-      hurt = Audio.SoldierHurt.key,
-      die = Audio.SoldierDie.key,
-      fire = Audio.Pistol.key)
-    enemies.add(Enemy.Config("soldier", health = 5, soldierAudio), Coordinates(config.map.tileSize*10, config.map.tileSize*25))
+    enemies = new EnemiesGroup(scene = this, gameConfig, enemyProjectiles)
+    enemies.add("soldier", Coordinates(config.map.tileSize*10, config.map.tileSize*25))
 
     physics.add.collider[Player, StaticTilemapLayer](player, floor)
     physics.add.collider[Player, StaticTilemapLayer](player, lowObstacles)

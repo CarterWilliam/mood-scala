@@ -1,10 +1,13 @@
 package mood.scenes
 
-import mood.config.LevelConfig
+import io.circe.parser.decode
+import mood.config.{GameConfig, LevelConfig}
+import mood.error.GameError
 import mood.{Assets, SceneLoader}
 import org.phaser.gameobjects.graphics.{GraphicsLineStyle, GraphicsOptions}
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig}
+
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 @ScalaJSDefined
@@ -23,11 +26,13 @@ class LoadScene extends Scene(SceneConfig(LoadScene.Key)) {
 
     createLoadBar()
 
+    val gameConfig = parseConfig()
+
     loadImages()
     loadMaps(sys.settings.data)
     loadSprites()
     loadAudio()
-    loadScenes(sys.settings.data)
+    loadScenes(sys.settings.data, gameConfig)
   }
 
   private def createLoadBar(): Unit = {
@@ -43,6 +48,17 @@ class LoadScene extends Scene(SceneConfig(LoadScene.Key)) {
       progress.fillRect(LoadBarX, LoadBarY, LoadBarWidth * value, LoadBarHeight)
     })
 
+  }
+
+  private def parseConfig(): GameConfig = {
+    val configJson: String = cache.text.get("game-config")
+    decode[GameConfig](configJson) match {
+      case Left(error) =>
+        val gameError = GameError(s"Failed to parse game config: ${error.getMessage}", error)
+        GameError.fatal(game, gameError)
+      case Right(config) =>
+        config
+    }
   }
 
   private def loadImages(): Unit = {
@@ -92,9 +108,9 @@ class LoadScene extends Scene(SceneConfig(LoadScene.Key)) {
     loader.load(Assets.Audio.WeaponPickup)
   }
 
-  private def loadScenes(config: LevelConfig): Unit = {
+  private def loadScenes(config: LevelConfig, gameConfig: GameConfig): Unit = {
     config.scenes.foreach { sceneConfig =>
-      this.scene.add(sceneConfig.key, new GameScene(sceneConfig))
+      this.scene.add(sceneConfig.key, new GameScene(sceneConfig, gameConfig))
     }
   }
 

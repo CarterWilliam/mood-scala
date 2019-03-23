@@ -1,7 +1,7 @@
 package mood.sprites.enemies
 
-import mood.Assets.Audio
 import mood.animation.MoodAnimations.Animation
+import mood.animation.MoodAnimations.Animation.AnimationKey
 import mood.sprites.Player
 import mood.sprites.components.Killable
 import mood.sprites.components.Killable.KillableConfig
@@ -17,19 +17,19 @@ import org.phaser.scenes.Scene
 class Enemy(scene: Scene,
             origin: Coordinates,
             config: Enemy.Config,
-            projectiles: ProjectilesGroup) extends Sprite(scene, origin.x, origin.y, config.key) {
+            projectiles: ProjectilesGroup) extends Sprite(scene, origin.x, origin.y, config.spritesheet) {
 
   private var state: State = Passive
 
   scene.physics.world.enable(this)
 
-  anims.play(s"${config.key}-passive")
+  anims.play(config.animations.passive)
 
   val killable: Killable = new Killable(this, KillableConfig(
     maxHealth = 11,
     painAudioKey = config.audio.hurt,
     deathAudioKey = config.audio.die,
-    deathAnimationKey = Enemy.Animations.Die.key,
+    deathAnimationKey = config.animations.die,
     onDeath = { _ => state = Dead }
   ))
 
@@ -56,12 +56,17 @@ class Enemy(scene: Scene,
 object Enemy {
 
   case class Config(
-    key: AssetKey,
+    spritesheet: AssetKey,
     health: Int,
+    sightRadius: Int,
     audio: Audio,
-    sightRadius: Int = 100)
+    animations: Animations)
 
   case class Audio(sight: AssetKey, hurt: AssetKey, die: AssetKey, fire: AssetKey)
+  case class Animations(
+    passive: AnimationKey,
+    die: AnimationKey
+  )
 
   sealed trait State
   case object Passive extends State

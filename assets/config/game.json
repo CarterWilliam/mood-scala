@@ -1,0 +1,20 @@
+{
+  "enemies": {
+    "soldier": {
+      "spritesheet": "soldier",
+      "health": 20,
+      "speed": 7,
+      "sightRadius": 100,
+      "audio": {
+        "sight": "soldier-sight",
+        "hurt": "soldier-hurt",
+        "die": "soldier-die",
+        "fire": "pistol"
+      },
+      "animations": {
+        "passive": "soldier-passive",
+        "die": "soldier-die"
+      }
+    }
+  }
+}
