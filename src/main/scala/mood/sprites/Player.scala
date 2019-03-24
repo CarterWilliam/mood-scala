@@ -3,7 +3,6 @@ package mood.sprites
 import mood.Assets
 import mood.animation.MoodAnimations.Animation
 import mood.scenes.GameScene
-import mood.sprites.Direction._
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.scenes.Scene
 import Player.Animations._
@@ -12,6 +11,7 @@ import mood.sprites.Player.Action.{Firing, Normal}
 import mood.sprites.Player._
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates
+import mood.util.Direction._
 import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Never, Repeat}
 
 class Player(scene: Scene, origin: Coordinates, projectiles: ProjectilesGroup)
@@ -148,16 +148,4 @@ object Player {
     val all: Set[Animation] =
       Set(MoveNorth, MoveNorthEast, MoveEast, MoveSouthEast, MoveSouth, MoveSouthWest, MoveWest, MoveNorthWest, ShootNorth, ShootNorthEast, ShootEast, ShootSouthEast, ShootSouth, ShootSouthWest, ShootWest, ShootNorthWest)
   }
-}
-
-object Direction {
-  sealed trait Direction { def radians: Double }
-  case object North extends Direction { val radians: Double = -Math.PI / 2 }
-  case object NorthEast extends Direction { val radians: Double = -Math.PI / 4 }
-  case object East extends Direction { val radians: Double = 0 }
-  case object SouthEast extends Direction { val radians: Double = Math.PI / 4 }
-  case object South extends Direction { val radians: Double = Math.PI / 2 }
-  case object SouthWest extends Direction { val radians: Double = 3*Math.PI / 4 }
-  case object West extends Direction { val radians: Double = Math.PI }
-  case object NorthWest extends Direction { val radians: Double = -3*Math.PI / 4 }
 }

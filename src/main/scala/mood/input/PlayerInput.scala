@@ -1,7 +1,7 @@
 package mood.input
 
 import mood.input.PlayerInput._
-import mood.sprites.Direction._
+import mood.util.Direction._
 
 class PlayerInput(keyboard: MoodKeyboardInput) {
   var cache: Map[String, Any] = Map.empty

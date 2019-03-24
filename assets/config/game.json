@@ -2,9 +2,10 @@
   "enemies": {
     "soldier": {
       "spritesheet": "soldier",
+      "firingInterval": 5000,
       "health": 20,
-      "speed": 7,
-      "sightRadius": 100,
+      "speed": 50,
+      "sightRadius": 150,
       "audio": {
         "sight": "soldier-sight",
         "hurt": "soldier-hurt",
@@ -12,14 +13,38 @@
         "fire": "pistol"
       },
       "animations": {
-        "passive": {
-          "key": "soldier-passive",
-          "frames": [ 0, 2 ]
+        "passive": { "key": "soldier-passive", "frames": [ 0, 2 ], "frameRate": 2 },
+        "movement": {
+          "north": { "key": "soldier-move-north", "frames": [ 28, 29, 30, 31 ] },
+          "northEast": { "key": "soldier-move-northeast", "frames": [ 35, 36, 37, 38 ] },
+          "east": { "key": "soldier-move-east", "frames": [ 42, 43, 44, 45 ] },
+          "southEast": { "key": "soldier-move-southeast", "frames": [ 49, 50, 51, 52 ] },
+          "south": { "key": "soldier-move-south", "frames": [ 0, 1, 2, 3 ] },
+          "southWest":{ "key": "soldier-move-southwest", "frames": [ 7, 8, 9, 10 ] },
+          "west": { "key": "soldier-move-west", "frames": [ 14, 15, 16, 17 ] },
+          "northWest": { "key": "soldier-move-northwest", "frames": [ 21, 22, 23, 24 ] }
         },
-        "die": {
-          "key": "soldier-die",
-          "frames": [ 56, 57, 58, 59, 60, 61]
-        }
+        "firing": {
+          "north": { "key": "soldier-shoot-north", "frames": [ 32, 33, 32 ] },
+          "northEast": { "key": "soldier-shoot-northeast", "frames": [ 39, 40, 39 ] },
+          "east": { "key": "soldier-shoot-east", "frames": [ 46, 47, 46 ] },
+          "southEast": { "key": "soldier-shoot-southeast", "frames": [ 53, 54, 53 ] },
+          "south": { "key": "soldier-shoot-south", "frames": [ 4, 5, 4 ] },
+          "southWest":{ "key": "soldier-shoot-southwest", "frames": [ 11, 12, 11 ] },
+          "west": { "key": "soldier-shoot-west", "frames": [ 18, 19, 18 ] },
+          "northWest": { "key": "soldier-shoot-northwest", "frames": [ 25, 26, 25 ] }
+        },
+        "hit": {
+          "north": { "key": "soldier-hit-north", "frames": [ 34 ] },
+          "northEast": { "key": "soldier-hit-northeast", "frames": [ 41 ] },
+          "east": { "key": "soldier-hit-east", "frames": [ 48 ] },
+          "southEast": { "key": "soldier-hit-southeast", "frames": [ 55 ] },
+          "south": { "key": "soldier-hit-south", "frames": [ 6 ] },
+          "southWest":{ "key": "soldier-hit-southwest", "frames": [ 13 ] },
+          "west": { "key": "soldier-hit-west", "frames": [ 20 ] },
+          "northWest": { "key": "soldier-hit-northwest", "frames": [ 27 ] }
+        },
+        "die": { "key": "soldier-die",  "frames": [ 56, 57, 58, 59, 60, 61], "repeat": "never" }
       }
     }
   }
