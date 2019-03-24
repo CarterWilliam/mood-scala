@@ -51,7 +51,7 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
       projectiles = playerProjectiles)
     cameras.main.startFollow(player, roundPixels = true)
 
-    MoodAnimations.createAnimations(anims)
+    MoodAnimations.createAnimations(anims, gameConfig)
 
     val enemyProjectiles = new ProjectilesGroup(scene = this)
     enemies = new EnemiesGroup(scene = this, gameConfig, enemyProjectiles)

@@ -12,8 +12,14 @@
         "fire": "pistol"
       },
       "animations": {
-        "passive": "soldier-passive",
-        "die": "soldier-die"
+        "passive": {
+          "key": "soldier-passive",
+          "frames": [ 0, 2 ]
+        },
+        "die": {
+          "key": "soldier-die",
+          "frames": [ 56, 57, 58, 59, 60, 61]
+        }
       }
     }
   }

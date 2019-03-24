@@ -23,13 +23,13 @@ class Enemy(scene: Scene,
 
   scene.physics.world.enable(this)
 
-  anims.play(config.animations.passive)
+  anims.play(config.animations.passive.key)
 
   val killable: Killable = new Killable(this, KillableConfig(
     maxHealth = 11,
     painAudioKey = config.audio.hurt,
     deathAudioKey = config.audio.die,
-    deathAnimationKey = config.animations.die,
+    deathAnimationKey = config.animations.die.key,
     onDeath = { _ => state = Dead }
   ))
 
@@ -64,8 +64,8 @@ object Enemy {
 
   case class Audio(sight: AssetKey, hurt: AssetKey, die: AssetKey, fire: AssetKey)
   case class Animations(
-    passive: AnimationKey,
-    die: AnimationKey
+    passive: Animation,
+    die: Animation
   )
 
   sealed trait State

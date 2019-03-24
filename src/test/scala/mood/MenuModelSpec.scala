@@ -33,14 +33,18 @@ class MenuModelSpec extends WordSpec with Matchers {
   }
 
   trait MenuScope {
+    object SceneOne extends GameScene.Key("scene-one")
+    object SceneOnePointTwo extends GameScene.Key("scene-one-point-two")
+    object SceneThree extends GameScene.Key("scene-three")
+
     val menu = MenuModel(
       MenuChoice(
-        MenuOption("one", StartScene("scene-one")),
+        MenuOption("one", StartScene(SceneOne)),
         MenuOption("two", SubMenu(
           MenuOption("one-one", DoAction(() => Unit)),
-          MenuOption("one-two", StartScene("scene-one-point-two"))
+          MenuOption("one-two", StartScene(SceneOnePointTwo))
         )),
-        MenuOption("three", StartScene("scene-three"))
+        MenuOption("three", StartScene(SceneThree))
       )
     )
   }

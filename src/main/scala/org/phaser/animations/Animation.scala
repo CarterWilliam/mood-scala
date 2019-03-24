@@ -56,6 +56,11 @@ object AnimationConfig {
   }
 
   object RepeatConfig {
+    def apply(int: Int): RepeatConfig = int match {
+      case 0 => Never
+      case times if times < 0 => Forever
+      case times => Repeat(times)
+    }
     sealed trait RepeatConfig { private[AnimationConfig] def times: Int }
     case object Forever extends RepeatConfig { val times = -1 }
     case object Never extends RepeatConfig { val times = 0 }

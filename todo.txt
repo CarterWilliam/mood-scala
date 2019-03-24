@@ -1,5 +1,4 @@
 # game
-- JSON config
 - enemy attacks player
  - moves to player
   - path finding

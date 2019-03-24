@@ -1,6 +1,7 @@
 package mood.scenes
 
 import io.circe.parser.decode
+import io.circe.generic.extras._
 import mood.config.{GameConfig, LevelConfig}
 import mood.error.GameError
 import mood.{Assets, SceneLoader}

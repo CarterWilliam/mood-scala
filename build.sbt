@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   "com.github.julien-truffaut"  %%% "monocle-macro" % "1.5.0",
   "io.circe"                    %%% "circe-core"    % "0.11.1",
   "io.circe"                    %%% "circe-generic" % "0.11.1",
+  "io.circe"                    %%% "circe-generic-extras" % "0.11.1",
   "io.circe"                    %%% "circe-parser"  % "0.11.1",
   "org.typelevel"               %%% "cats-core"     % "1.5.0",
   "org.scalatest"               %%% "scalatest"     % "3.0.0" % "test"
