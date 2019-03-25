@@ -11,6 +11,7 @@
 
 ## refactor
 - phaser update to 3.17.0
+- use lenses in ammo bag
 
 ## major
 - multiplayer

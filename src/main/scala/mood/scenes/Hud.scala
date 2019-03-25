@@ -1,7 +1,8 @@
 package mood.scenes
 
-import mood.events.Events.HealthChanged
-import mood.scenes.Hud.{Ammo, Arms, Depth, Fonts}
+import mood.events.Events.{AmmoChanged, HealthChanged}
+import mood.scenes.Hud.{AmmoAmounts, Arms, Depth, Fonts}
+import mood.sprites.player.guns._
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.gameobjects.text.Style.Color
 import org.phaser.gameobjects.text.{Style, Text}
@@ -13,7 +14,7 @@ class Hud extends Scene(Hud.Config) {
   var currentAmmo: Text = _
   var armour: Text = _
   var arms: Arms = _
-  var ammo: Ammo = _
+  var ammo: AmmoAmounts = _
 
   override def create(): Unit = {
     val background: Sprite = add.sprite(0, 520, "hud")
@@ -32,11 +33,11 @@ class Hud extends Scene(Hud.Config) {
       six = add.existing(new HasArmDisplay(this, 303, 550, "6")),
       seven = add.existing(new HasArmDisplay(this, 333, 550, "7")))
 
-    ammo = Ammo(
-      bullets = new AmmoDisplay(this, 50, 200, 526),
-      shells = new AmmoDisplay(this, 0, 50, 542),
-      rockets = new AmmoDisplay(this, 0, 50, 558),
-      plasma = new AmmoDisplay(this, 0, 200, 574),
+    ammo = AmmoAmounts(
+      bullets = new AmmoAmountsDisplay(this, 50, 200, 526),
+      shells = new AmmoAmountsDisplay(this, 0, 50, 542),
+      rockets = new AmmoAmountsDisplay(this, 0, 50, 558),
+      plasma = new AmmoAmountsDisplay(this, 0, 200, 574),
     )
   }
 
@@ -49,6 +50,10 @@ class Hud extends Scene(Hud.Config) {
   def startWatching(scene: GameScene): Unit = {
     scene.events.on(HealthChanged.key, { healthChanged: HealthChanged =>
       health.setText(s"${healthChanged.newValue.toString}%")
+    })
+    scene.events.on(AmmoChanged.key, { ammoChanged: AmmoChanged =>
+      ammo(ammoChanged.`type`).remainingDisplay
+        .setText(s"${ammoChanged.amount.toString}%")
     })
   }
 
@@ -100,18 +105,26 @@ object Hud {
     six: HasArmDisplay,
     seven: HasArmDisplay)
 
-  case class Ammo(
-    bullets: AmmoDisplay,
-    shells: AmmoDisplay,
-    rockets: AmmoDisplay,
-    plasma: AmmoDisplay)
+  case class AmmoAmounts(
+    bullets: AmmoAmountsDisplay,
+    shells: AmmoAmountsDisplay,
+    rockets: AmmoAmountsDisplay,
+    plasma: AmmoAmountsDisplay) {
+
+    def apply(`type`: Ammo): AmmoAmountsDisplay = `type` match {
+      case Bullets => bullets
+      case Shells => shells
+      case Rockets => rockets
+      case Plasma => plasma
+    }
+  }
 }
 
 class HasArmDisplay(hud: Hud, x: Int, y: Int, label: String) extends Text(hud, x, y, label, Fonts.SmallGaugeGrey) {
   def acquired(): HasArmDisplay = setColor(Fonts.yellow).asInstanceOf[HasArmDisplay]
 }
 
-class AmmoDisplay(hud: Scene, initial: Int, max: Int, y: Int) {
+class AmmoAmountsDisplay(hud: Scene, initial: Int, max: Int, y: Int) {
   val remainingDisplay: Text = hud.add.text(690, y, initial.toString, Fonts.SmallGaugeYellow)
   val maxDisplay: Text = hud.add.text(750, y, max.toString, Fonts.SmallGaugeYellow)
 }

@@ -2,12 +2,13 @@ package mood.sprites
 
 import mood.Assets
 import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
-import mood.events.Events.HealthChanged
+import mood.events.Events.{AmmoChanged, HealthChanged}
 import mood.input.PlayerInput
 import mood.scenes.GameScene
 import mood.sprites.Player.Action.{Dying, Firing, Normal}
 import mood.sprites.Player._
 import mood.sprites.components.Killable
+import mood.sprites.player.guns.{AmmoBag, Pistol, Weapon}
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates
 import mood.util.Direction._
@@ -48,11 +49,19 @@ class Player(scene: Scene, origin: Coordinates, val config: Player.Config, proje
   }
 
   private def fire(): Unit = {
-    body.stop()
-    projectiles.add(Coordinates(x, y), state.direction)
-    scene.sound.play("pistol")
-    anims.play(config.animations.firing(state.direction), ignoreIfPlaying = true)
-    switchState(Firing)
+    state.ammo.take(state.equipped.ammoType, state.equipped.ammoCost) match {
+      case Some(updatedAmmoBag) =>
+        updateAmmo(updatedAmmoBag)
+        scene.events.emit(AmmoChanged.key,
+          AmmoChanged(state.equipped.ammoType, updatedAmmoBag.remaining(state.equipped.ammoType)))
+        body.stop()
+        projectiles.add(Coordinates(x, y), state.direction)
+        scene.sound.play("pistol")
+        anims.play(config.animations.firing(state.direction), ignoreIfPlaying = true)
+        switchState(Firing)
+      case None =>
+        // don't shoot...
+    }
   }
 
   private def whileFiring(): Unit = {
@@ -99,6 +108,10 @@ class Player(scene: Scene, origin: Coordinates, val config: Player.Config, proje
     state = state.copy(health = health)
   }
 
+  private def updateAmmo(ammo: AmmoBag): Unit = {
+    state = state.copy(ammo = ammo)
+  }
+
   private def turn(direction: CompassDirection): Unit = {
     state = state.copy(direction = direction)
   }
@@ -126,7 +139,12 @@ object Player {
     firing: DirectedAnimations,
     die: Animation)
 
-  case class State(action: Action, direction: CompassDirection, health: Int)
+  case class State(
+    action: Action,
+    direction: CompassDirection,
+    health: Int,
+    equipped: Weapon = Pistol,
+    ammo: AmmoBag = AmmoBag())
 
   sealed trait Action
   object Action {
