@@ -4,7 +4,6 @@ import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
 import mood.error.GameError
 import mood.sprites.Player
 import mood.sprites.components.Killable
-import mood.sprites.components.Killable.KillableConfig
 import mood.sprites.enemies.Enemy._
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Direction._
@@ -17,24 +16,16 @@ import org.phaser.scenes.Scene
 
 class Enemy(scene: Scene,
             origin: Coordinates,
-            config: Enemy.Config,
+            val config: Enemy.Config,
             projectiles: ProjectilesGroup) extends Sprite(scene, origin.x, origin.y, config.spritesheet) {
 
   private var state: State = Passive
+  private var health: Int = config.health
   private var lastShot: Double = 0
 
   scene.physics.world.enable(this)
 
   anims.play(config.animations.passive.key)
-
-  val killable: Killable = new Killable(this, KillableConfig(
-    maxHealth = config.health,
-    painAudioKey = config.audio.hurt,
-    deathAudioKey = config.audio.die,
-    deathAnimationKey = config.animations.die.key,
-    onDamage = { _ => state = Aggressive },
-    onDeath = { _ => state = Dead }
-  ))
 
   def update(player: Player, time: Double): Unit = state match {
     case Passive => passiveUpdate(player)
@@ -121,5 +112,20 @@ object Enemy {
   case object Aggressive extends State
   case object Shooting extends State
   case object Dead extends State // TODO: replace sprite with image and remove from game
+
+  implicit val playerKillable: Killable[Enemy] = new Killable[Enemy] {
+    def painAudioKey(enemy: Enemy): AssetKey = enemy.config.audio.hurt
+    def deathAudioKey(enemy: Enemy): AssetKey = enemy.config.audio.die
+    def deathAnimationKey(enemy: Enemy): AssetKey = enemy.config.animations.die
+
+    def currentHealth(enemy: Enemy): Int = enemy.health
+    def onDamage(enemy: Enemy, health: Int): Unit = {
+      enemy.health = health
+      enemy.state = Aggressive
+    }
+    def onDeath(enemy: Enemy): Unit = {
+      enemy.state = Dead
+    }
+  }
 
 }

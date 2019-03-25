@@ -1,44 +1,34 @@
 package mood.sprites.components
 
-import mood.animation.MoodAnimations.Animation.AnimationKey
-import mood.sprites.components.Killable.KillableConfig
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.loader.LoaderPlugin.AssetKey
 
-import scala.scalajs.js
+trait Killable[K <: Sprite] {
+  def painAudioKey(killable: K): AssetKey
+  def deathAudioKey(killable: K): AssetKey
+  def deathAnimationKey(killable: K): AssetKey
 
-class Killable(sprite: Sprite, config: KillableConfig) extends js.Object {
+  def currentHealth(killable: K): Int
+  def onDamage(killable: K, health: Int): Unit
+  def onDeath(killable: K): Unit
 
-  var health: Int = config.maxHealth
-
-  def takeDamage(hitPoints: Int): Unit = {
-    health -= hitPoints
-    if (health < 1) {
-      die()
+  final def takeDamage(killable: K, hitPoints: Int): Unit = {
+    val newHealth = currentHealth(killable) - hitPoints
+    if (newHealth < 1) {
+      die(killable)
     } else {
-      sprite.scene.sound.play(config.painAudioKey)
-      sprite.body.stop()
-      config.onDamage(health)
+      killable.scene.sound.play(painAudioKey(killable))
+      killable.body.stop()
+      onDamage(killable, newHealth)
     }
   }
 
-  private def die(): Unit = {
-    sprite.scene.sound.play(config.deathAudioKey)
-    sprite.body.stop()
-    sprite.anims.play(config.deathAnimationKey)
-    sprite.body.destroy()
-    config.onDeath(sprite)
+  private def die(killable: K): Unit = {
+    killable.scene.sound.play(deathAudioKey(killable))
+    killable.body.stop()
+    killable.anims.play(deathAnimationKey(killable))
+    killable.body.destroy()
+    onDeath(killable)
   }
 
-}
-
-object Killable {
-
-  case class KillableConfig(
-    maxHealth: Int,
-    painAudioKey: AssetKey,
-    deathAudioKey: AssetKey,
-    deathAnimationKey: AnimationKey,
-    onDamage: Int => Unit = _ => (): Unit,
-    onDeath: Sprite => Unit = _ => (): Unit)
 }

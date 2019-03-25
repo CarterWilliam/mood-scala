@@ -8,16 +8,14 @@ import mood.scenes.GameScene
 import mood.sprites.Player.Action.{Dying, Firing, Normal}
 import mood.sprites.Player._
 import mood.sprites.components.Killable
-import mood.sprites.components.Killable.KillableConfig
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates
 import mood.util.Direction._
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.loader.LoaderPlugin.AssetKey
 import org.phaser.scenes.Scene
-import org.phaser.events.EventEmitter._
 
-class Player(scene: Scene, origin: Coordinates, config: Player.Config, projectiles: ProjectilesGroup)
+class Player(scene: Scene, origin: Coordinates, val config: Player.Config, projectiles: ProjectilesGroup)
   extends Sprite(scene, origin.x, origin.y, Assets.SpriteSheets.Player.key) {
 
   private val velocity: Int = config.speed
@@ -33,20 +31,6 @@ class Player(scene: Scene, origin: Coordinates, config: Player.Config, projectil
   body.setCollideWorldBounds()
 
   setDepth(GameScene.Depth.Sprite)
-
-  val killable: Killable = new Killable(this, KillableConfig(
-    maxHealth = config.maxHealth,
-    painAudioKey = config.audio.hurt,
-    deathAudioKey = config.audio.die,
-    deathAnimationKey = config.animations.die.key,
-    onDamage = { newHealth =>
-      scene.events.emit(HealthChanged.key, HealthChanged(newHealth))
-    },
-    onDeath = { _ =>
-      switchState(Dying)
-      println("Game Over man, Game Over")
-    }
-  ))
 
   def update(input: PlayerInput): Unit = state.action match {
     case Normal =>
@@ -111,6 +95,10 @@ class Player(scene: Scene, origin: Coordinates, config: Player.Config, projectil
     state = state.copy(action = action)
   }
 
+  private def updateHealth(health: Int): Unit = {
+    state = state.copy(health = health)
+  }
+
   private def turn(direction: CompassDirection): Unit = {
     state = state.copy(direction = direction)
   }
@@ -147,4 +135,19 @@ object Player {
     case object Dying extends Action
   }
 
+  implicit val playerKillable: Killable[Player] = new Killable[Player] {
+    def painAudioKey(player: Player): AssetKey = player.config.audio.hurt
+    def deathAudioKey(player: Player): AssetKey = player.config.audio.die
+    def deathAnimationKey(player: Player): AssetKey = player.config.animations.die
+
+    def currentHealth(player: Player): Int = player.state.health
+    def onDamage(player: Player, health: Int): Unit = {
+      player.updateHealth(health)
+      player.scene.events.emit(HealthChanged.key, HealthChanged(health))
+    }
+    def onDeath(player: Player): Unit = {
+      player.switchState(Dying)
+      player.scene.events.emit(HealthChanged.key, HealthChanged(0))
+    }
+  }
 }
