@@ -2,7 +2,6 @@ package mood.animation
 
 import mood.animation.MoodAnimations.Animation.AnimationKey
 import mood.config.GameConfig
-import mood.sprites.Player
 import mood.util.Direction._
 import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, RepeatConfig}
 import org.phaser.animations.{AnimationConfig, AnimationManager, GenerateFrameNumbersConfig}
@@ -47,7 +46,10 @@ object MoodAnimations {
   }
 
   def createAnimations(anims: AnimationManager, gameConfig: GameConfig): Unit = {
-    Player.Animations.all.foreach(createAnimation(anims, "player"))
+    gameConfig.player.animations.movement.foreach(createAnimation(anims, "player"))
+    gameConfig.player.animations.firing.foreach(createAnimation(anims, "player"))
+    createAnimation(anims, "player")(gameConfig.player.animations.die)
+
     gameConfig.enemies.foreach { case (enemyKey, enemyConfig) =>
       createAnimation(anims, enemyKey)(enemyConfig.animations.passive)
       createAnimation(anims, enemyKey)(enemyConfig.animations.die)

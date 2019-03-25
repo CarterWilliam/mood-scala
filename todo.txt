@@ -4,14 +4,14 @@
 - enemy chacha state
 - path finding
 - onEvent in library
-- phaser update to 3.17.0
 - blood particle emitter on impact
 - player health
 - ammo
 - hud updates
+- firing offsets
 
 ## refactor
-- player to retrieve animations from config
+- phaser update to 3.17.0
 
 ## major
 - multiplayer

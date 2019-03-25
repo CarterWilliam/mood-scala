@@ -48,6 +48,7 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
       origin = Coordinates(
         x = config.map.tileSize*config.map.playerStartX,
         y = config.map.tileSize*config.map.playerStartY),
+      config = gameConfig.player,
       projectiles = playerProjectiles)
     cameras.main.startFollow(player, roundPixels = true)
 

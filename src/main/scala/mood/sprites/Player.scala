@@ -1,32 +1,30 @@
 package mood.sprites
 
 import mood.Assets
-import mood.animation.MoodAnimations.Animation
+import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
 import mood.input.PlayerInput
 import mood.scenes.GameScene
 import mood.sprites.Player.Action.{Firing, Normal}
-import mood.sprites.Player.Animations._
 import mood.sprites.Player._
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates
 import mood.util.Direction._
-import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Never}
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.scenes.Scene
 
-class Player(scene: Scene, origin: Coordinates, projectiles: ProjectilesGroup)
+class Player(scene: Scene, origin: Coordinates, config: Player.Config, projectiles: ProjectilesGroup)
   extends Sprite(scene, origin.x, origin.y, Assets.SpriteSheets.Player.key) {
 
-  private val velocity: Int = 160
-  private val diagonalVelocity: Double = Math.floor(velocity / Math.sqrt(2))
+  private val velocity: Int = config.speed
+  private val diagonalVelocity: Double = Math.floor(config.speed / Math.sqrt(2))
 
   private var state: State = State(Normal, South, health = 100)
 
   scene.physics.world.enable(this)
   scene.add.existing(this)
 
-  body.setSize(30, 40)
-  body.setOffset(15, 20)
+  body.setSize(config.size.width, config.size.height)
+  body.setOffset(config.offset.x, config.offset.y)
   body.setCollideWorldBounds()
 
   setDepth(GameScene.Depth.Sprite)
@@ -48,9 +46,7 @@ class Player(scene: Scene, origin: Coordinates, projectiles: ProjectilesGroup)
     body.stop()
     projectiles.add(Coordinates(x, y), state.direction)
     scene.sound.play("pistol")
-
-    val shootKey = s"player-shoot-${state.direction.toString.toLowerCase}"
-    anims.play(shootKey, ignoreIfPlaying = true)
+    anims.play(config.animations.firing(state.direction), ignoreIfPlaying = true)
     switchState(Firing)
   }
 
@@ -82,24 +78,7 @@ class Player(scene: Scene, origin: Coordinates, projectiles: ProjectilesGroup)
         body.setVelocity(-diagonalVelocity, -diagonalVelocity)
     }
 
-    state.direction match {
-      case North =>
-        anims.play(MoveNorth, ignoreIfPlaying = true)
-      case NorthEast =>
-        anims.play(MoveNorthEast, ignoreIfPlaying = true)
-      case East =>
-        anims.play(MoveEast, ignoreIfPlaying = true)
-      case SouthEast =>
-        anims.play(MoveSouthEast, ignoreIfPlaying = true)
-      case South =>
-        anims.play(MoveSouth, ignoreIfPlaying = true)
-      case SouthWest =>
-        anims.play(MoveSouthWest, ignoreIfPlaying = true)
-      case West =>
-        anims.play(MoveWest, ignoreIfPlaying = true)
-      case NorthWest =>
-        anims.play(MoveNorthWest, ignoreIfPlaying = true)
-    }
+    anims.play(config.animations.movement(state.direction), ignoreIfPlaying = true)
   }
 
   private def stop(): Unit = {
@@ -118,6 +97,21 @@ class Player(scene: Scene, origin: Coordinates, projectiles: ProjectilesGroup)
 
 object Player {
 
+  case class Config(
+    size: Size,
+    offset: Offset,
+    maxHealth: Int,
+    speed: Int,
+    animations: Animations)
+
+  case class Size(width: Int, height: Int)
+  case class Offset(x: Int, y: Int)
+
+  case class Animations(
+    movement: DirectedAnimations,
+    firing: DirectedAnimations,
+    die: Animation)
+
   case class State(action: Action, direction: CompassDirection, health: Int)
 
   sealed trait Action
@@ -126,26 +120,4 @@ object Player {
     case object Firing extends Action
   }
 
-  object Animations {
-    val MoveNorth = Animation("player-move-north", 16 to 19, Forever)
-    val MoveNorthEast = Animation("player-move-northeast", 20 to 23, Forever)
-    val MoveEast = Animation("player-move-east", 24 to 27, Forever)
-    val MoveSouthEast = Animation("player-move-southeast", 28 to 31, Forever)
-    val MoveSouth = Animation("player-move-south", 0 to 3, Forever)
-    val MoveSouthWest = Animation("player-move-southwest", 4 to 7, Forever)
-    val MoveWest = Animation("player-move-west", 8 to 11, Forever)
-    val MoveNorthWest = Animation("player-move-northwest", 12 to 15, Forever)
-
-    val ShootNorth = Animation("player-shoot-north", Seq(41, 40), Never)
-    val ShootNorthEast = Animation("player-shoot-northeast", Seq(43, 42), Never)
-    val ShootEast = Animation("player-shoot-east", Seq(45, 44), Never)
-    val ShootSouthEast = Animation("player-shoot-southeast", Seq(47, 46), Never)
-    val ShootSouth = Animation("player-shoot-south", Seq(33, 32), Never)
-    val ShootSouthWest = Animation("player-shoot-southwest", Seq(35, 34), Never)
-    val ShootWest = Animation("player-shoot-west", Seq(37, 36), Never)
-    val ShootNorthWest = Animation("player-shoot-northwest", Seq(39, 38), Never)
-
-    val all: Set[Animation] =
-      Set(MoveNorth, MoveNorthEast, MoveEast, MoveSouthEast, MoveSouth, MoveSouthWest, MoveWest, MoveNorthWest, ShootNorth, ShootNorthEast, ShootEast, ShootSouthEast, ShootSouth, ShootSouthWest, ShootWest, ShootNorthWest)
-  }
 }
