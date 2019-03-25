@@ -14,7 +14,7 @@ class PlayerInput(keyboard: MoodKeyboardInput) {
 
   def isStrafing: Boolean = keyboard.shift.isDown
 
-  def direction: Option[Direction] = cached("direction") {
+  def direction: Option[CompassDirection] = cached("direction") {
     directionVector match {
       case (0, 0) => None
       case (0, 1) => Some(North)

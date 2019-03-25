@@ -2,17 +2,17 @@ package mood.sprites
 
 import mood.Assets
 import mood.animation.MoodAnimations.Animation
-import mood.scenes.GameScene
-import org.phaser.gameobjects.sprite.Sprite
-import org.phaser.scenes.Scene
-import Player.Animations._
 import mood.input.PlayerInput
+import mood.scenes.GameScene
 import mood.sprites.Player.Action.{Firing, Normal}
+import mood.sprites.Player.Animations._
 import mood.sprites.Player._
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates
 import mood.util.Direction._
-import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Never, Repeat}
+import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Never}
+import org.phaser.gameobjects.sprite.Sprite
+import org.phaser.scenes.Scene
 
 class Player(scene: Scene, origin: Coordinates, projectiles: ProjectilesGroup)
   extends Sprite(scene, origin.x, origin.y, Assets.SpriteSheets.Player.key) {
@@ -46,7 +46,7 @@ class Player(scene: Scene, origin: Coordinates, projectiles: ProjectilesGroup)
 
   private def fire(): Unit = {
     body.stop()
-    projectiles.add(Coordinates(x, y), state.direction.radians)
+    projectiles.add(Coordinates(x, y), state.direction)
     scene.sound.play("pistol")
 
     val shootKey = s"player-shoot-${state.direction.toString.toLowerCase}"
@@ -111,14 +111,14 @@ class Player(scene: Scene, origin: Coordinates, projectiles: ProjectilesGroup)
     state = state.copy(action = action)
   }
 
-  private def turn(direction: Direction): Unit = {
+  private def turn(direction: CompassDirection): Unit = {
     state = state.copy(direction = direction)
   }
 }
 
 object Player {
 
-  case class State(action: Action, direction: Direction, health: Int)
+  case class State(action: Action, direction: CompassDirection, health: Int)
 
   sealed trait Action
   object Action {

@@ -26,7 +26,7 @@ class Sprite(
 object Sprite {
   class SpriteExtension(sprite: Sprite) {
     def onAnimationComplete(f: => Unit): EventEmitter = {
-      sprite.on("animationcomplete", { _: Any => f })
+      sprite.once("animationcomplete", { _: Any => f })
     }
   }
 

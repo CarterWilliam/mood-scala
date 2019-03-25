@@ -1,19 +1,19 @@
 package mood.sprites.enemies
 
 import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
+import mood.error.GameError
 import mood.sprites.Player
 import mood.sprites.components.Killable
 import mood.sprites.components.Killable.KillableConfig
 import mood.sprites.enemies.Enemy._
 import mood.sprites.projectiles.ProjectilesGroup
-import mood.util.Coordinates
 import mood.util.Direction._
+import mood.util.{Coordinates, ExplicitDirection}
 import org.phaser.gameobjects.sprite.Sprite
+import org.phaser.gameobjects.sprite.Sprite._
 import org.phaser.loader.LoaderPlugin.AssetKey
 import org.phaser.math.{Angle, Distance}
 import org.phaser.scenes.Scene
-
-import scala.scalajs.js.JavaScriptException
 
 class Enemy(scene: Scene,
             origin: Coordinates,
@@ -39,7 +39,8 @@ class Enemy(scene: Scene,
   def update(player: Player, time: Double): Unit = state match {
     case Passive => passiveUpdate(player)
     case Aggressive => aggressiveUpdate(player, time)
-    case Dead => (): Unit
+    case Shooting => // do nothing
+    case Dead => // do nothing
   }
 
   private def passiveUpdate(player: Player): Unit = {
@@ -62,8 +63,19 @@ class Enemy(scene: Scene,
   }
 
   private def shootAtPlayer(player: Player, time: Double): Unit = {
-    scene.sound.play(config.audio.fire)
-    lastShot = time
+    state = Shooting
+    body.setVelocity(0, 0)
+    val angleToPlayer = Angle.Between(x, y, player.x, player.y)
+    val closestDirection = directionForAngle(angleToPlayer)
+
+    anims.play(config.animations.firing(closestDirection))
+
+    this.onAnimationComplete {
+      projectiles.add(x, y, ExplicitDirection(angleToPlayer))
+      scene.sound.play(config.audio.fire)
+      lastShot = time
+      state = Aggressive
+    }
   }
 
   private def moveToPlayer(player: Player): Unit = {
@@ -75,20 +87,11 @@ class Enemy(scene: Scene,
     anims.play(config.animations.movement(closestDirection), ignoreIfPlaying = true)
   }
 
-  private def directionForAngle(angle: Double): Direction = {
-    Seq(East,
-      SouthEast,
-      South,
-      SouthWest,
-      West,
-      NorthWest,
-      North,
-      NorthEast
-    ).find { direction =>
-      Math.abs(angle - direction.radians) <= PiOver8 ||
-        Math.abs(angle - direction.radians + TwoPi) <= PiOver8
+  private def directionForAngle(angle: Double): CompassDirection = {
+    Seq(East, SouthEast, South, SouthWest, West, NorthWest, North, NorthEast).find { direction =>
+      Math.abs(angle - direction.radians) <= PiOver8 || Math.abs(angle - direction.radians + TwoPi) <= PiOver8
     }.getOrElse {
-      throw JavaScriptException("angle out of bounds???")
+      GameError.fatal(scene.game, GameError(s"Could not determine compass direction for angle '$angle'"))
     }
   }
 
@@ -116,6 +119,7 @@ object Enemy {
   sealed trait State
   case object Passive extends State
   case object Aggressive extends State
+  case object Shooting extends State
   case object Dead extends State // TODO: replace sprite with image and remove from game
 
 }

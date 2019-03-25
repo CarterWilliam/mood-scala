@@ -3,7 +3,7 @@ package mood.error
 import mood.Log
 import org.phaser.Game
 
-case class GameError(message: String, cause: Option[Throwable])
+case class GameError(message: String, cause: Option[Throwable] = None)
   extends Throwable(message, cause.orNull)
 
 object GameError {

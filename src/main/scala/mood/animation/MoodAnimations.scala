@@ -4,7 +4,7 @@ import mood.animation.MoodAnimations.Animation.AnimationKey
 import mood.config.GameConfig
 import mood.sprites.Player
 import mood.util.Direction._
-import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Repeat, RepeatConfig}
+import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, RepeatConfig}
 import org.phaser.animations.{AnimationConfig, AnimationManager, GenerateFrameNumbersConfig}
 import org.phaser.loader.LoaderPlugin.AssetKey
 
@@ -30,7 +30,7 @@ object MoodAnimations {
     west: Animation,
     northWest: Animation
   ) {
-    def apply(direction: Direction): Animation = direction match {
+    def apply(direction: CompassDirection): Animation = direction match {
       case North => north
       case NorthEast => northEast
       case East => east
@@ -52,6 +52,8 @@ object MoodAnimations {
       createAnimation(anims, enemyKey)(enemyConfig.animations.passive)
       createAnimation(anims, enemyKey)(enemyConfig.animations.die)
       enemyConfig.animations.movement.foreach(createAnimation(anims, enemyKey))
+      enemyConfig.animations.firing.foreach(createAnimation(anims, enemyKey))
+      enemyConfig.animations.hit.foreach(createAnimation(anims, enemyKey))
     }
   }
 

@@ -1,10 +1,17 @@
-# game
-- enemy attacks player
- - moves to player
-  - path finding
- - fires at player
+# TODO
+
+## game
 - enemy chacha state
-- sealerate ?
+- path finding
 - onEvent in library
 - phaser update to 3.17.0
 - blood particle emitter on impact
+- player health
+- ammo
+- hud updates
+
+## refactor
+- player to retrieve animations from config
+
+## major
+- multiplayer

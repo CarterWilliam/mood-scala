@@ -7,6 +7,7 @@ import scala.scalajs.js
 @js.native
 class EventEmitter extends js.Object {
   def on(event: EventKey, fn: js.Function, context: js.Any = this): EventEmitter = js.native
+  def once(event: EventKey, fn: js.Function, context: js.Any = this): EventEmitter = js.native
 }
 
 object EventEmitter {
