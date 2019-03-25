@@ -4,7 +4,10 @@
     "offset": { "x": 15, "y": 20 },
     "size": { "width": 30, "height": 40 },
     "speed": 160,
-    "audio": {},
+    "audio": {
+      "hurt": "player-hurt",
+      "die": "player-die"
+    },
     "animations": {
       "movement": {
         "north": { "key": "player-move-north", "frames": [ 16, 17, 18, 19 ] },

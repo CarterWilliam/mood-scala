@@ -28,7 +28,7 @@ class Enemy(scene: Scene,
   anims.play(config.animations.passive.key)
 
   val killable: Killable = new Killable(this, KillableConfig(
-    maxHealth = 11,
+    maxHealth = config.health,
     painAudioKey = config.audio.hurt,
     deathAudioKey = config.audio.die,
     deathAnimationKey = config.animations.die.key,

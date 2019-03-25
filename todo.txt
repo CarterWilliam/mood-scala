@@ -11,6 +11,7 @@
 - firing offsets
 
 ## refactor
+- killable as type class
 - phaser update to 3.17.0
 
 ## major

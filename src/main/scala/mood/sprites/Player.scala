@@ -6,10 +6,13 @@ import mood.input.PlayerInput
 import mood.scenes.GameScene
 import mood.sprites.Player.Action.{Firing, Normal}
 import mood.sprites.Player._
+import mood.sprites.components.Killable
+import mood.sprites.components.Killable.KillableConfig
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates
 import mood.util.Direction._
 import org.phaser.gameobjects.sprite.Sprite
+import org.phaser.loader.LoaderPlugin.AssetKey
 import org.phaser.scenes.Scene
 
 class Player(scene: Scene, origin: Coordinates, config: Player.Config, projectiles: ProjectilesGroup)
@@ -18,7 +21,7 @@ class Player(scene: Scene, origin: Coordinates, config: Player.Config, projectil
   private val velocity: Int = config.speed
   private val diagonalVelocity: Double = Math.floor(config.speed / Math.sqrt(2))
 
-  private var state: State = State(Normal, South, health = 100)
+  private var state: State = State(Normal, South, health = config.maxHealth)
 
   scene.physics.world.enable(this)
   scene.add.existing(this)
@@ -28,6 +31,14 @@ class Player(scene: Scene, origin: Coordinates, config: Player.Config, projectil
   body.setCollideWorldBounds()
 
   setDepth(GameScene.Depth.Sprite)
+
+  val killable: Killable = new Killable(this, KillableConfig(
+    maxHealth = config.maxHealth,
+    painAudioKey = config.audio.hurt,
+    deathAudioKey = config.audio.die,
+    deathAnimationKey = config.animations.die.key,
+    onDeath = { _ => println("Game Over man, Game Over") }
+  ))
 
   def update(input: PlayerInput): Unit = state.action match {
     case Firing =>
@@ -102,10 +113,15 @@ object Player {
     offset: Offset,
     maxHealth: Int,
     speed: Int,
+    audio: Audio,
     animations: Animations)
 
   case class Size(width: Int, height: Int)
   case class Offset(x: Int, y: Int)
+
+  case class Audio(
+    hurt: AssetKey,
+    die: AssetKey)
 
   case class Animations(
     movement: DirectedAnimations,

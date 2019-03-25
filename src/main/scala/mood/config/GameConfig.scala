@@ -15,6 +15,7 @@ object GameConfig {
 
   private implicit val sizeDecoder: Decoder[Player.Size] = deriveDecoder[Player.Size]
   private implicit val offsetDecoder: Decoder[Player.Offset] = deriveDecoder[Player.Offset]
+  private implicit val playerAudioDecoder: Decoder[Player.Audio] = deriveDecoder[Player.Audio]
   private implicit val playerAnimationsDecoder: Decoder[Player.Animations] = deriveDecoder[Player.Animations]
   private implicit val playerConfigDecoder: Decoder[Player.Config] = deriveDecoder[Player.Config]
 

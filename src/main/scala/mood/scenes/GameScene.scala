@@ -62,10 +62,15 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
     physics.add.collider[Player, StaticTilemapLayer](player, lowObstacles)
     physics.add.collider[Player, StaticTilemapLayer](player, highObstacles)
 
+    val playerCollideProjectile: js.Function2[Projectile, Player, Unit] = (projectile, player) => {
+      player.killable.takeDamage(projectile.config.damage)
+      projectile.impact()
+    }
     val enemyCollideProjectile: js.Function2[Projectile, Enemy, Unit] = (projectile, enemy) => {
       enemy.killable.takeDamage(projectile.config.damage)
       projectile.impact()
     }
+    physics.add.collider[Projectile, Player](enemyProjectiles, player, playerCollideProjectile)
     physics.add.collider[Projectile, Enemy](playerProjectiles, enemies, enemyCollideProjectile)
 
     keys = MoodKeyboardInput(input.keyboard)
