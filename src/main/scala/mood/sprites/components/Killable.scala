@@ -18,7 +18,7 @@ class Killable(sprite: Sprite, config: KillableConfig) extends js.Object {
     } else {
       sprite.scene.sound.play(config.painAudioKey)
       sprite.body.stop()
-      config.onHit(sprite)
+      config.onDamage(health)
     }
   }
 
@@ -39,6 +39,6 @@ object Killable {
     painAudioKey: AssetKey,
     deathAudioKey: AssetKey,
     deathAnimationKey: AnimationKey,
-    onHit: Sprite => Unit = _ => (): Unit,
+    onDamage: Int => Unit = _ => (): Unit,
     onDeath: Sprite => Unit = _ => (): Unit)
 }

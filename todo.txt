@@ -5,7 +5,6 @@
 - path finding
 - onEvent in library
 - blood particle emitter on impact
-- player health
 - ammo
 - hud updates
 - firing offsets

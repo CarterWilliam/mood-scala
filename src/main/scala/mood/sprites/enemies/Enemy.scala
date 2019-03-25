@@ -32,7 +32,7 @@ class Enemy(scene: Scene,
     painAudioKey = config.audio.hurt,
     deathAudioKey = config.audio.die,
     deathAnimationKey = config.animations.die.key,
-    onHit = { _ => state = Aggressive },
+    onDamage = { _ => state = Aggressive },
     onDeath = { _ => state = Dead }
   ))
 

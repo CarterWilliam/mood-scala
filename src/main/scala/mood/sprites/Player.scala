@@ -2,9 +2,10 @@ package mood.sprites
 
 import mood.Assets
 import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
+import mood.events.Events.HealthChanged
 import mood.input.PlayerInput
 import mood.scenes.GameScene
-import mood.sprites.Player.Action.{Firing, Normal}
+import mood.sprites.Player.Action.{Dying, Firing, Normal}
 import mood.sprites.Player._
 import mood.sprites.components.Killable
 import mood.sprites.components.Killable.KillableConfig
@@ -14,6 +15,7 @@ import mood.util.Direction._
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.loader.LoaderPlugin.AssetKey
 import org.phaser.scenes.Scene
+import org.phaser.events.EventEmitter._
 
 class Player(scene: Scene, origin: Coordinates, config: Player.Config, projectiles: ProjectilesGroup)
   extends Sprite(scene, origin.x, origin.y, Assets.SpriteSheets.Player.key) {
@@ -37,12 +39,16 @@ class Player(scene: Scene, origin: Coordinates, config: Player.Config, projectil
     painAudioKey = config.audio.hurt,
     deathAudioKey = config.audio.die,
     deathAnimationKey = config.animations.die.key,
-    onDeath = { _ => println("Game Over man, Game Over") }
+    onDamage = { newHealth =>
+      scene.events.emit(HealthChanged.key, HealthChanged(newHealth))
+    },
+    onDeath = { _ =>
+      switchState(Dying)
+      println("Game Over man, Game Over")
+    }
   ))
 
   def update(input: PlayerInput): Unit = state.action match {
-    case Firing =>
-      whileFiring()
     case Normal =>
       if (input.isFiring) {
         fire()
@@ -51,6 +57,10 @@ class Player(scene: Scene, origin: Coordinates, config: Player.Config, projectil
       } else {
         stop()
       }
+    case Firing =>
+      whileFiring()
+    case Dying =>
+      // what can you do?
   }
 
   private def fire(): Unit = {
@@ -134,6 +144,7 @@ object Player {
   object Action {
     case object Normal extends Action
     case object Firing extends Action
+    case object Dying extends Action
   }
 
 }

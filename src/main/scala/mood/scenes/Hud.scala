@@ -1,5 +1,6 @@
 package mood.scenes
 
+import mood.events.Events.HealthChanged
 import mood.scenes.Hud.{Ammo, Arms, Depth, Fonts}
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.gameobjects.text.Style.Color
@@ -46,8 +47,8 @@ class Hud extends Scene(Hud.Config) {
   }
 
   def startWatching(scene: GameScene): Unit = {
-    scene.events.on("healthChanged", { newHealth: Int =>
-      health.setText(s"${newHealth.toString}%")
+    scene.events.on(HealthChanged.key, { healthChanged: HealthChanged =>
+      health.setText(s"${healthChanged.newValue.toString}%")
     })
   }
 
