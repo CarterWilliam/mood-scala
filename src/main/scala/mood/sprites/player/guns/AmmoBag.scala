@@ -9,16 +9,16 @@ case class AmmoBag(
   plasma: AmmoPocket = AmmoPocket(0, 200)
 ) {
 
-  def apply(`type`: Ammo): AmmoPocket = `type` match {
+  private def pocket(ammoType: Ammo): AmmoPocket = ammoType match {
     case Bullets => bullets
     case Shells => shells
     case Rockets => rockets
     case Plasma => plasma
   }
 
-  def remaining(`type`: Ammo): Int = apply(`type`).remaining
+  def remaining(ammoType: Ammo): Int = pocket(ammoType).remaining
 
-  def has(`type`: Ammo, amount: Int): Boolean = apply(`type`).remaining >= amount
+  def has(ammoType: Ammo, amount: Int): Boolean = pocket(ammoType).remaining >= amount
 
   def add(ammoType: Ammo, amount: Int): AmmoBag = {
     modify(ammoType, amount)(this)
@@ -39,16 +39,20 @@ object AmmoBag {
   private val plasma: Lens[AmmoBag, AmmoPocket] = GenLens[AmmoBag](_.plasma)
 
   private val remaining: Lens[AmmoPocket, Int] = GenLens[AmmoPocket](_.remaining)
+  private val maximum: Lens[AmmoPocket, Int] = GenLens[AmmoPocket](_.maximum)
 
-  def modify(`type`: Ammo): Lens[AmmoBag, AmmoPocket] = `type` match {
+  private def modify(ammoType: Ammo): Lens[AmmoBag, AmmoPocket] = ammoType match {
     case Bullets => bullets
     case Shells => shells
     case Rockets => rockets
     case Plasma => plasma
   }
 
-  def modify(`type`: Ammo, amount: Int)(bag: AmmoBag): AmmoBag = {
-    (modify(`type`) ^|-> remaining).modify(_ + amount)(bag)
+  def modify(ammoType: Ammo, amount: Int)(bag: AmmoBag): AmmoBag = {
+    val max = (modify(ammoType) composeLens maximum).get(bag)
+    (modify(ammoType) ^|-> remaining).modify { current =>
+      Math.min(current + amount, max)
+    }(bag)
   }
 
 }

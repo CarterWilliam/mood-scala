@@ -1,8 +1,10 @@
 # TODO
 
 ## code
+- initial player state in config
 - items
-- armour
+ - health
+ - armour
 - enemy drops items
 - hud updates
 - enemy berserk state
@@ -14,7 +16,7 @@
 - add imp, shotgun zombie, commando
 
 ## refactor
-- player to be provided with state
+- use sealerate or similar to autogenerate case object enums constructor/circe decoder
 - guns to be configured via JSON
 - phaser update to 3.17.0
 

@@ -7,9 +7,9 @@ import mood.animation.MoodAnimations.Animation.AnimationKey
 import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, Repeat, RepeatConfig}
 import org.scalatest.{Matchers, WordSpec}
 
-class AnimationCodecsSpec extends WordSpec with Matchers {
+class AnimationDecodersSpec extends WordSpec with Matchers {
 
-  import AnimationCodecs._
+  import mood.config.parse.circe.AnimationDecoders._
 
   "The AnimationCodecs" should {
 

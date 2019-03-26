@@ -17,13 +17,17 @@ import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.loader.LoaderPlugin.AssetKey
 import org.phaser.scenes.Scene
 
-class Player(scene: Scene, origin: Coordinates, val config: Player.Config, projectiles: ProjectilesGroup)
+class Player(scene: Scene,
+             origin: Coordinates,
+             val config: Player.Config,
+             projectiles: ProjectilesGroup,
+             initialState: Option[State] = None)
   extends Sprite(scene, origin.x, origin.y, Assets.SpriteSheets.Player.key) {
 
   private val velocity: Int = config.speed
   private val diagonalVelocity: Double = Math.floor(config.speed / Math.sqrt(2))
 
-  private var state: State = State(Normal, South, health = config.maxHealth)
+  private var state: State = initialState.getOrElse(config.initialState)
 
   scene.physics.world.enable(this)
   scene.add.existing(this)
@@ -134,7 +138,8 @@ object Player {
     maxHealth: Int,
     speed: Int,
     audio: Audio,
-    animations: Animations)
+    animations: Animations,
+    initialState: State)
 
   case class Size(width: Int, height: Int)
   case class Offset(x: Int, y: Int)
@@ -149,7 +154,7 @@ object Player {
     die: Animation)
 
   case class State(
-    action: Action,
+    action: Action = Normal,
     direction: CompassDirection,
     health: Int,
     equipped: Weapon = Pistol,
@@ -157,6 +162,12 @@ object Player {
 
   sealed trait Action
   object Action {
+    def apply(key: String): Option[Action] = key match {
+      case "normal" => Some(Normal)
+      case "firing" => Some(Firing)
+      case "dying" => Some(Dying)
+      case _ => None
+    }
     case object Normal extends Action
     case object Firing extends Action
     case object Dying extends Action

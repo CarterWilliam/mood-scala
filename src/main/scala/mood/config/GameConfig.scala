@@ -19,9 +19,10 @@ case class ItemsConfig(ammo: Map[ItemKey, AmmoItemConfig]) {
 }
 
 object GameConfig {
-  import mood.animation.circe.codecs.AnimationCodecs._
+  import mood.config.parse.circe.AnimationDecoders._
   import mood.config.parse.circe.ItemDecoders._
   import mood.config.parse.circe.AmmoDecoders.decodeAmmo
+  import mood.config.parse.circe.StateDecoders._
 
   private implicit val sizeDecoder: Decoder[Player.Size] = deriveDecoder[Player.Size]
   private implicit val offsetDecoder: Decoder[Player.Offset] = deriveDecoder[Player.Offset]

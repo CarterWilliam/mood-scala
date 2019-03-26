@@ -30,6 +30,18 @@
         "northWest": { "key": "player-shoot-northwest", "frames": [ 39, 38 ], "repeat": "never" }
       },
       "die": { "key": "player-die",  "frames": [ 48, 56, 57, 58, 59, 60, 61, 62 ], "repeat": "never" }
+    },
+    "initialState": {
+      "action": "normal",
+      "direction": "south",
+      "health": 100,
+      "equipped": "pistol",
+      "ammo": {
+        "bullets": { "remaining": 50, "maximum": 200 },
+        "shells": { "remaining": 0, "maximum": 50 },
+        "rockets": { "remaining": 0, "maximum": 50 },
+        "plasma": { "remaining": 0, "maximum": 200 }
+      }
     }
   },
   "enemies": {
