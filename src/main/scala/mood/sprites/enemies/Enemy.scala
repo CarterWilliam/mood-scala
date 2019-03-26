@@ -7,9 +7,9 @@ import mood.sprites.enemies.Enemy._
 import mood.sprites.items.{ItemKey, ItemsGroup}
 import mood.sprites.player.Player
 import mood.sprites.projectiles.ProjectilesGroup
-import mood.util.Direction._
-import mood.util.Position.{Coordinates, Offset}
-import mood.util.ExplicitDirection
+import mood.spacial.Direction._
+import mood.spacial.Position.{Coordinates, Offset}
+import mood.spacial.ExplicitDirection
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.gameobjects.sprite.Sprite._
 import org.phaser.loader.LoaderPlugin.AssetKey

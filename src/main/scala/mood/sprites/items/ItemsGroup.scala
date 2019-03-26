@@ -1,7 +1,7 @@
 package mood.sprites.items
 
 import mood.config.GameConfig
-import mood.util.Position.Coordinates
+import mood.spacial.Position.Coordinates
 import org.phaser.gameobjects.group.Group
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.scenes.Scene

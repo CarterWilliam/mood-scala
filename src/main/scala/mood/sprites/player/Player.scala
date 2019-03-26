@@ -2,6 +2,7 @@ package mood.sprites.player
 
 import mood.Assets
 import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
+import mood.config.GameConfig
 import mood.events.Events.{AmmoChanged, HealthChanged}
 import mood.input.PlayerInput
 import mood.scenes.GameScene
@@ -9,21 +10,24 @@ import mood.sprites.components.Killable
 import mood.sprites.items.{AmmoItemConfig, ItemConfig}
 import mood.sprites.player.Player.Action.{Dying, Firing, Normal}
 import mood.sprites.player.Player.{Action, State}
-import mood.sprites.player.guns.{AmmoBag, Pistol, Weapon}
+import mood.sprites.player.guns.{AmmoBag, Pistol, WeaponConfig, WeaponKey}
 import mood.sprites.projectiles.ProjectilesGroup
-import mood.util.Direction._
-import mood.util.Position.{Coordinates, Offset, Size}
+import mood.spacial.Direction._
+import mood.spacial.ExplicitDirection
+import mood.spacial.Position.{Coordinates, Offset, Size}
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.loader.LoaderPlugin.AssetKey
+import org.phaser.math.RND
 import org.phaser.scenes.Scene
 
 class Player(scene: Scene,
              origin: Coordinates,
-             val config: Player.Config,
+             gameConfig: GameConfig,
              projectiles: ProjectilesGroup,
              initialState: Option[State] = None)
   extends Sprite(scene, origin.x, origin.y, Assets.SpriteSheets.Player.key) {
 
+  private val config = gameConfig.player
   private val velocity: Int = config.speed
   private val diagonalVelocity: Double = Math.floor(config.speed / Math.sqrt(2))
 
@@ -62,19 +66,24 @@ class Player(scene: Scene,
   }
 
   private def fire(): Unit = {
-    state.ammo.take(state.equipped.ammoType, state.equipped.ammoCost) match {
+    state.ammo.take(currentWeapon.ammoType, currentWeapon.ammoCost) match {
       case Some(updatedAmmoBag) =>
         updateAmmo(updatedAmmoBag)
-        val event = AmmoChanged(state.equipped.ammoType, updatedAmmoBag.remaining(state.equipped.ammoType))
+        val event = AmmoChanged(currentWeapon.ammoType, updatedAmmoBag.remaining(currentWeapon.ammoType))
         scene.events.emit(AmmoChanged.key, event)
         body.stop()
-        projectiles.add(Coordinates(x, y), state.direction)
+        val direction = RND.realInRange(state.direction.radians - currentWeapon.maxMissRadians, state.direction.radians + currentWeapon.maxMissRadians)
+        projectiles.add(Coordinates(x, y), ExplicitDirection(direction))
         scene.sound.play("pistol")
         anims.play(config.animations.firing(state.direction), ignoreIfPlaying = true)
         switchState(Firing)
       case None =>
         // don't shoot...
     }
+  }
+
+  private def currentWeapon: WeaponConfig = {
+    gameConfig.weapons(state.equipped)
   }
 
   private def whileFiring(): Unit = {
@@ -154,8 +163,8 @@ object Player {
     action: Action = Normal,
     direction: CompassDirection,
     health: Int,
-    equipped: Weapon = Pistol,
-    ammo: AmmoBag = AmmoBag())
+    equipped: WeaponKey,
+    ammo: AmmoBag)
 
   sealed trait Action
   object Action {

@@ -9,7 +9,7 @@ import mood.sprites.enemies.{EnemiesGroup, Enemy}
 import mood.sprites.items.{ItemSprite, ItemsGroup}
 import mood.sprites.player.Player
 import mood.sprites.projectiles.{Projectile, ProjectilesGroup}
-import mood.util.Position.Coordinates
+import mood.spacial.Position.Coordinates
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
@@ -51,7 +51,7 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
       origin = Coordinates(
         x = config.map.tileSize*config.map.playerStartX,
         y = config.map.tileSize*config.map.playerStartY),
-      config = gameConfig.player,
+      gameConfig = gameConfig,
       projectiles = playerProjectiles)
     cameras.main.startFollow(player, roundPixels = true)
 

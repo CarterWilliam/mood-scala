@@ -3,10 +3,11 @@ package mood.config.parse.circe
 import io.circe.Decoder
 import io.circe.generic.semiauto.deriveDecoder
 import mood.sprites.player.Player
-import mood.util.Direction.CompassDirection
+import mood.spacial.Direction.CompassDirection
 
 object StateDecoders {
   import AmmoDecoders._
+  import WeaponDecoders._
 
   implicit val decodeAction: Decoder[Player.Action] = {
     Decoder.decodeString.emap[Player.Action] { key =>

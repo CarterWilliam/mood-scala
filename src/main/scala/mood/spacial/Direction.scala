@@ -1,4 +1,4 @@
-package mood.util
+package mood.spacial
 
 sealed trait Direction { def radians: Double }
 

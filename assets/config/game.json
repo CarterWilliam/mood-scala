@@ -44,6 +44,15 @@
       }
     }
   },
+  "weapons": {
+    "pistol": {
+      "ammoType": "bullets",
+      "ammoCost": 1,
+      "burst": 1,
+      "fireInterval": 400,
+      "maxMissRadians": 0.03
+    }
+  },
   "enemies": {
     "soldier": {
       "spritesheet": "soldier",

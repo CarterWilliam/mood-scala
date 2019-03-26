@@ -5,10 +5,12 @@ import io.circe.generic.semiauto._
 import mood.sprites.enemies.Enemy
 import mood.sprites.items.{AmmoItemConfig, AmmoItemKey, ItemConfig, ItemKey}
 import mood.sprites.player.Player
-import mood.util.Position.{Offset, Size}
+import mood.sprites.player.guns.{WeaponConfig, WeaponKey}
+import mood.spacial.Position.{Offset, Size}
 
 case class GameConfig(
   player: Player.Config,
+  weapons: Map[WeaponKey, WeaponConfig],
   enemies: Map[String, Enemy.Config],
   items: ItemsConfig
 )
@@ -20,10 +22,11 @@ case class ItemsConfig(ammo: Map[ItemKey, AmmoItemConfig]) {
 }
 
 object GameConfig {
+  import mood.config.parse.circe.AmmoDecoders.decodeAmmo
   import mood.config.parse.circe.AnimationDecoders._
   import mood.config.parse.circe.ItemDecoders._
-  import mood.config.parse.circe.AmmoDecoders.decodeAmmo
   import mood.config.parse.circe.StateDecoders._
+  import mood.config.parse.circe.WeaponDecoders._
 
   private implicit val sizeDecoder: Decoder[Size] = deriveDecoder[Size]
   private implicit val offsetDecoder: Decoder[Offset] = deriveDecoder[Offset]

@@ -1,22 +1,19 @@
 package mood.sprites.projectiles
 
-import mood.sprites.projectiles.Projectile.ProjectileConfig
-import mood.util.Direction
-import mood.util.Position.Coordinates
+import mood.spacial.Direction
+import mood.spacial.Position.Coordinates
 import org.phaser.gameobjects.group.Group
 import org.phaser.scenes.Scene
 
 class ProjectilesGroup(scene: Scene) extends Group[Projectile](scene) {
 
   def add(origin: Coordinates, direction: Direction): Projectile = {
-    val config = ProjectileConfig(
+    val config = Projectile.Config(
       texture = "bullet",
       damage = 10,
-      origin = origin,
-      direction = direction.radians,
       speed = 600)
 
-    val projectile = new Projectile(scene, this, config)
+    val projectile = new Projectile(scene, this, origin, direction, config)
     this.add(projectile, addToScene = true)
     projectile
   }

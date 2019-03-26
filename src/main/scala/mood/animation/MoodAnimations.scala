@@ -2,7 +2,7 @@ package mood.animation
 
 import mood.animation.MoodAnimations.Animation.AnimationKey
 import mood.config.GameConfig
-import mood.util.Direction._
+import mood.spacial.Direction._
 import org.phaser.animations.AnimationConfig.RepeatConfig.{Forever, RepeatConfig}
 import org.phaser.animations.{AnimationConfig, AnimationManager, GenerateFrameNumbersConfig}
 import org.phaser.loader.LoaderPlugin.AssetKey
