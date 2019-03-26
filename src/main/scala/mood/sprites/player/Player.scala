@@ -6,6 +6,7 @@ import mood.events.Events.{AmmoChanged, HealthChanged}
 import mood.input.PlayerInput
 import mood.scenes.GameScene
 import mood.sprites.components.Killable
+import mood.sprites.items.{AmmoItemConfig, ItemConfig}
 import mood.sprites.player.Player.Action.{Dying, Firing, Normal}
 import mood.sprites.player.Player.{Action, State}
 import mood.sprites.player.guns.{AmmoBag, Pistol, Weapon}
@@ -48,12 +49,20 @@ class Player(scene: Scene, origin: Coordinates, val config: Player.Config, proje
       // what can you do?
   }
 
+  def pickup(item: ItemConfig): Unit = item match {
+    case ammo: AmmoItemConfig =>
+      scene.sound.play(ammo.pickupAudio)
+      updateAmmo(state.ammo.add(ammo.ammoType, ammo.amount))
+      val event = AmmoChanged(ammo.ammoType, state.ammo.remaining(ammo.ammoType))
+      scene.events.emit(AmmoChanged.key, event)
+  }
+
   private def fire(): Unit = {
     state.ammo.take(state.equipped.ammoType, state.equipped.ammoCost) match {
       case Some(updatedAmmoBag) =>
         updateAmmo(updatedAmmoBag)
-        scene.events.emit(AmmoChanged.key,
-          AmmoChanged(state.equipped.ammoType, updatedAmmoBag.remaining(state.equipped.ammoType)))
+        val event = AmmoChanged(state.equipped.ammoType, updatedAmmoBag.remaining(state.equipped.ammoType))
+        scene.events.emit(AmmoChanged.key, event)
         body.stop()
         projectiles.add(Coordinates(x, y), state.direction)
         scene.sound.play("pistol")

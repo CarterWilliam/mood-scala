@@ -37,6 +37,7 @@
       "spritesheet": "soldier",
       "firingInterval": 5000,
       "health": 20,
+      "itemDrop": "clip",
       "speed": 50,
       "sightRadius": 150,
       "audio": {
@@ -80,5 +81,18 @@
         "die": { "key": "soldier-die",  "frames": [ 56, 57, 58, 59, 60, 61], "repeat": "never" }
       }
     }
+  },
+  "items": {
+    "ammo": {
+      "clip": {
+        "image": "clip",
+        "pickupAudio": "weapon-pickup",
+        "ammoType": "bullets",
+        "amount": 10
+      }
+    },
+    "weapons": {},
+    "health": {},
+    "armour": {}
   }
 }

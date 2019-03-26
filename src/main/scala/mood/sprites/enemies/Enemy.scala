@@ -4,6 +4,7 @@ import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
 import mood.error.GameError
 import mood.sprites.components.Killable
 import mood.sprites.enemies.Enemy._
+import mood.sprites.items.{ItemKey, ItemsGroup}
 import mood.sprites.player.Player
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Direction._
@@ -17,7 +18,8 @@ import org.phaser.scenes.Scene
 class Enemy(scene: Scene,
             origin: Coordinates,
             val config: Enemy.Config,
-            projectiles: ProjectilesGroup) extends Sprite(scene, origin.x, origin.y, config.spritesheet) {
+            projectiles: ProjectilesGroup,
+            val items: ItemsGroup) extends Sprite(scene, origin.x, origin.y, config.spritesheet) {
 
   private var state: State = Passive
   private var health: Int = config.health
@@ -91,11 +93,12 @@ class Enemy(scene: Scene,
 object Enemy {
 
   case class Config(
-    spritesheet: AssetKey,
+    firingInterval: Int,
     health: Int,
+    itemDrop: Option[ItemKey] = None,
     sightRadius: Int,
     speed: Int,
-    firingInterval: Int,
+    spritesheet: AssetKey,
     audio: Audio,
     animations: Animations)
 
@@ -125,6 +128,9 @@ object Enemy {
     }
     def onDeath(enemy: Enemy): Unit = {
       enemy.state = Dead
+      enemy.config.itemDrop.foreach { item =>
+        enemy.items.add(item, Coordinates(enemy.x, enemy.y))
+      }
     }
   }
 

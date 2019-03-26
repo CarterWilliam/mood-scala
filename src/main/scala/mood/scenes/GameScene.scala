@@ -6,6 +6,7 @@ import mood.input.{MoodKeyboardInput, PlayerInput}
 import mood.scenes.GameScene.Depth
 import mood.sprites.components.Killable
 import mood.sprites.enemies.{EnemiesGroup, Enemy}
+import mood.sprites.items.{ItemSprite, ItemsGroup}
 import mood.sprites.player.Player
 import mood.sprites.projectiles.{Projectile, ProjectilesGroup}
 import mood.util.Coordinates
@@ -56,21 +57,29 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
 
     MoodAnimations.createAnimations(anims, gameConfig)
 
+    val items = new ItemsGroup(scene = this, gameConfig)
+
     val enemyProjectiles = new ProjectilesGroup(scene = this)
-    enemies = new EnemiesGroup(scene = this, gameConfig, enemyProjectiles)
+    enemies = new EnemiesGroup(scene = this, gameConfig, enemyProjectiles, items)
     enemies.add("soldier", Coordinates(config.map.tileSize*10, config.map.tileSize*25))
 
     physics.add.collider[Player, StaticTilemapLayer](player, floor)
     physics.add.collider[Player, StaticTilemapLayer](player, lowObstacles)
     physics.add.collider[Player, StaticTilemapLayer](player, highObstacles)
 
-    def killableCollideProjectile[S <: Sprite : Killable]: js.Function2[Projectile, S, Unit] = (projectile, killable) => {
+    def projectileCollider[S <: Sprite : Killable]: js.Function2[Projectile, S, Unit] = (projectile, killable) => {
       implicitly[Killable[S]].takeDamage(killable, projectile.config.damage)
       projectile.impact()
     }
+    physics.add.collider[Projectile, Player](enemyProjectiles, player, projectileCollider[Player])
+    physics.add.collider[Projectile, Enemy](playerProjectiles, enemies, projectileCollider[Enemy])
 
-    physics.add.collider[Projectile, Player](enemyProjectiles, player, killableCollideProjectile[Player])
-    physics.add.collider[Projectile, Enemy](playerProjectiles, enemies, killableCollideProjectile[Enemy])
+    val itemCollider: js.Function2[ItemSprite, Player, Unit] = (item, player) => {
+      println("player pickup item")
+      player.pickup(item.config)
+      item.destroy()
+    }
+    physics.add.collider[ItemSprite, Player](items, player, itemCollider)
 
     keys = MoodKeyboardInput(input.keyboard)
     playerInput = new PlayerInput(keys)
