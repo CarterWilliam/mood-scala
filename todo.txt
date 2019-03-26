@@ -1,14 +1,16 @@
 # TODO
 
 ## code
-- initial player state in config
+- weapons
+ - accuracy
+ - burst
+ - impact
 - items
  - health
  - armour
-- enemy drops items
-- hud updates
-- enemy berserk state
-- path finding
+- enemy
+ - berserk state
+ - path finding
 - blood particle emitter on impact
 - firing offsets
 

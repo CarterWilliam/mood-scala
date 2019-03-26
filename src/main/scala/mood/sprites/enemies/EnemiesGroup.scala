@@ -3,7 +3,7 @@ package mood.sprites.enemies
 import mood.config.GameConfig
 import mood.sprites.items.ItemsGroup
 import mood.sprites.projectiles.ProjectilesGroup
-import mood.util.Coordinates
+import mood.util.Position.Coordinates
 import org.phaser.gameobjects.group.Group
 import org.phaser.scenes.Scene
 

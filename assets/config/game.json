@@ -49,7 +49,10 @@
       "spritesheet": "soldier",
       "firingInterval": 5000,
       "health": 20,
-      "itemDrop": "clip",
+      "itemDrop": {
+        "item": "clip",
+        "offset": { "x": 0, "y": 12 }
+      },
       "speed": 50,
       "sightRadius": 150,
       "audio": {

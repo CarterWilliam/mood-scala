@@ -8,7 +8,8 @@ import mood.sprites.items.{ItemKey, ItemsGroup}
 import mood.sprites.player.Player
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Direction._
-import mood.util.{Coordinates, ExplicitDirection}
+import mood.util.Position.{Coordinates, Offset}
+import mood.util.ExplicitDirection
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.gameobjects.sprite.Sprite._
 import org.phaser.loader.LoaderPlugin.AssetKey
@@ -95,12 +96,14 @@ object Enemy {
   case class Config(
     firingInterval: Int,
     health: Int,
-    itemDrop: Option[ItemKey] = None,
+    itemDrop: Option[ItemDrop] = None,
     sightRadius: Int,
     speed: Int,
     spritesheet: AssetKey,
     audio: Audio,
     animations: Animations)
+
+  case class ItemDrop(item: ItemKey, offset: Offset)
 
   case class Audio(sight: AssetKey, hurt: AssetKey, die: AssetKey, fire: AssetKey)
   case class Animations(
@@ -128,8 +131,10 @@ object Enemy {
     }
     def onDeath(enemy: Enemy): Unit = {
       enemy.state = Dead
-      enemy.config.itemDrop.foreach { item =>
-        enemy.items.add(item, Coordinates(enemy.x, enemy.y))
+      enemy.config.itemDrop.foreach { drop =>
+        enemy.onAnimationComplete {
+          enemy.items.add(drop.item, Coordinates(enemy.x, enemy.y) + drop.offset)
+        }
       }
     }
   }

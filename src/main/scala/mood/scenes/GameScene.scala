@@ -9,7 +9,7 @@ import mood.sprites.enemies.{EnemiesGroup, Enemy}
 import mood.sprites.items.{ItemSprite, ItemsGroup}
 import mood.sprites.player.Player
 import mood.sprites.projectiles.{Projectile, ProjectilesGroup}
-import mood.util.Coordinates
+import mood.util.Position.Coordinates
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}

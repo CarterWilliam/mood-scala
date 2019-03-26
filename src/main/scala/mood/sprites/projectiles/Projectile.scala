@@ -2,7 +2,7 @@ package mood.sprites.projectiles
 
 import mood.animation.MoodAnimations.Animation.AnimationKey
 import mood.sprites.projectiles.Projectile.ProjectileConfig
-import mood.util.Coordinates
+import mood.util.Position.Coordinates
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.loader.LoaderPlugin.AssetKey
 import org.phaser.scenes.Scene

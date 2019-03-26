@@ -11,8 +11,8 @@ import mood.sprites.player.Player.Action.{Dying, Firing, Normal}
 import mood.sprites.player.Player.{Action, State}
 import mood.sprites.player.guns.{AmmoBag, Pistol, Weapon}
 import mood.sprites.projectiles.ProjectilesGroup
-import mood.util.Coordinates
 import mood.util.Direction._
+import mood.util.Position.{Coordinates, Offset, Size}
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.loader.LoaderPlugin.AssetKey
 import org.phaser.scenes.Scene
@@ -140,9 +140,6 @@ object Player {
     audio: Audio,
     animations: Animations,
     initialState: State)
-
-  case class Size(width: Int, height: Int)
-  case class Offset(x: Int, y: Int)
 
   case class Audio(
     hurt: AssetKey,

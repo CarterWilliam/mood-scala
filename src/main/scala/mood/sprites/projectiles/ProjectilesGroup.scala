@@ -1,7 +1,8 @@
 package mood.sprites.projectiles
 
 import mood.sprites.projectiles.Projectile.ProjectileConfig
-import mood.util.{Coordinates, Direction}
+import mood.util.Direction
+import mood.util.Position.Coordinates
 import org.phaser.gameobjects.group.Group
 import org.phaser.scenes.Scene
 
