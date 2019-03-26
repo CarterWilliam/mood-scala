@@ -4,9 +4,9 @@ import mood.animation.MoodAnimations
 import mood.config.{GameConfig, LevelConfig, SceneConfig}
 import mood.input.{MoodKeyboardInput, PlayerInput}
 import mood.scenes.GameScene.Depth
-import mood.sprites.Player
 import mood.sprites.components.Killable
 import mood.sprites.enemies.{EnemiesGroup, Enemy}
+import mood.sprites.player.Player
 import mood.sprites.projectiles.{Projectile, ProjectilesGroup}
 import mood.util.Coordinates
 import org.phaser.gameobjects.sprite.Sprite

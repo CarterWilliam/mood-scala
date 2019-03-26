@@ -2,8 +2,8 @@ package mood.config
 
 import io.circe.Decoder
 import io.circe.generic.semiauto._
-import mood.sprites.Player
 import mood.sprites.enemies.Enemy
+import mood.sprites.player.Player
 
 case class GameConfig(
   player: Player.Config,

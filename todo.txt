@@ -1,17 +1,22 @@
 # TODO
 
-## game
-- enemy chacha state
-- path finding
-- onEvent in library
-- blood particle emitter on impact
-- ammo
+## code
+- items
+- armour
+- enemy drops items
 - hud updates
+- enemy berserk state
+- path finding
+- blood particle emitter on impact
 - firing offsets
 
+# art
+- add imp, shotgun zombie, commando
+
 ## refactor
+- player to be provided with state
+- guns to be configured via JSON
 - phaser update to 3.17.0
-- use lenses in ammo bag
 
 ## major
 - multiplayer

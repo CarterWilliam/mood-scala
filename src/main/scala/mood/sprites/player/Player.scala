@@ -1,13 +1,13 @@
-package mood.sprites
+package mood.sprites.player
 
 import mood.Assets
 import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
 import mood.events.Events.{AmmoChanged, HealthChanged}
 import mood.input.PlayerInput
 import mood.scenes.GameScene
-import mood.sprites.Player.Action.{Dying, Firing, Normal}
-import mood.sprites.Player._
 import mood.sprites.components.Killable
+import mood.sprites.player.Player.Action.{Dying, Firing, Normal}
+import mood.sprites.player.Player.{Action, State}
 import mood.sprites.player.guns.{AmmoBag, Pistol, Weapon}
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Coordinates

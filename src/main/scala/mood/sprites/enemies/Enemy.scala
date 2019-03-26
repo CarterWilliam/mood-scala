@@ -2,9 +2,9 @@ package mood.sprites.enemies
 
 import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
 import mood.error.GameError
-import mood.sprites.Player
 import mood.sprites.components.Killable
 import mood.sprites.enemies.Enemy._
+import mood.sprites.player.Player
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.util.Direction._
 import mood.util.{Coordinates, ExplicitDirection}
