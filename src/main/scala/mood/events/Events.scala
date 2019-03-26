@@ -10,7 +10,7 @@ object Events {
     val key: EventKey = "healthchanged"
   }
 
-  case class AmmoChanged(`type`: Ammo, amount: Int)
+  case class AmmoChanged(ammoType: Ammo, amount: Int)
   object AmmoChanged {
     val key: EventKey = "ammochanged"
   }

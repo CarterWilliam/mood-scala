@@ -1,7 +1,7 @@
 package mood.scenes
 
 import mood.events.Events.{AmmoChanged, HealthChanged}
-import mood.scenes.Hud.{AmmoAmounts, Arms, Depth, Fonts}
+import mood.scenes.Hud._
 import mood.sprites.player.guns._
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.gameobjects.text.Style.Color
@@ -11,7 +11,7 @@ import org.phaser.scenes.Scene.SceneKey
 
 class Hud extends Scene(Hud.Config) {
   var health: Text = _
-  var currentAmmo: Text = _
+  var currentAmmo: CurrentAmmo = _
   var armour: Text = _
   var arms: Arms = _
   var ammo: AmmoAmounts = _
@@ -22,7 +22,7 @@ class Hud extends Scene(Hud.Config) {
     background.setDepth(Depth.Background)
 
     health = createHudText(194, Hud.LargeGaugeY, "100%", Fonts.LargeGaugeRed)
-    currentAmmo = createHudText(66, Hud.LargeGaugeY, "50", Fonts.LargeGaugeRed)
+    currentAmmo = CurrentAmmo(Bullets, createHudText(66, Hud.LargeGaugeY, "50", Fonts.LargeGaugeRed))
     armour = createHudText(522, Hud.LargeGaugeY, "0%", Fonts.LargeGaugeRed)
 
     arms = Arms(
@@ -52,8 +52,11 @@ class Hud extends Scene(Hud.Config) {
       health.setText(s"${healthChanged.newValue.toString}%")
     })
     scene.events.on(AmmoChanged.key, { ammoChanged: AmmoChanged =>
-      ammo(ammoChanged.`type`).remainingDisplay
+      ammo(ammoChanged.ammoType).remainingDisplay
         .setText(s"${ammoChanged.amount.toString}%")
+      if (currentAmmo.ammoType == ammoChanged.ammoType) {
+        currentAmmo.display.setText(ammoChanged.amount.toString)
+      }
     })
   }
 
@@ -117,6 +120,10 @@ object Hud {
       case Rockets => rockets
       case Plasma => plasma
     }
+  }
+
+  case class CurrentAmmo(ammoType: Ammo, display: Text) {
+    def changeAmmo(ammoType: Ammo): CurrentAmmo = copy(ammoType = ammoType)
   }
 }
 

@@ -75,7 +75,6 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
     physics.add.collider[Projectile, Enemy](playerProjectiles, enemies, projectileCollider[Enemy])
 
     val itemCollider: js.Function2[ItemSprite, Player, Unit] = (item, player) => {
-      println("player pickup item")
       player.pickup(item.config)
       item.destroy()
     }
