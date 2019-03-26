@@ -6,7 +6,7 @@ import mood.sprites.components.Killable
 import mood.sprites.enemies.Enemy._
 import mood.sprites.items.{ItemKey, ItemsGroup}
 import mood.sprites.player.Player
-import mood.sprites.projectiles.ProjectilesGroup
+import mood.sprites.projectiles.{Projectile, ProjectilesGroup}
 import mood.spacial.Direction._
 import mood.spacial.Position.{Coordinates, Offset}
 import mood.spacial.ExplicitDirection
@@ -65,7 +65,7 @@ class Enemy(scene: Scene,
     anims.play(config.animations.firing(closestDirection))
 
     this.onAnimationComplete {
-      projectiles.add(x, y, ExplicitDirection(angleToPlayer))
+      projectiles.add(config.projectile, Coordinates(x, y), ExplicitDirection(angleToPlayer))
       scene.sound.play(config.audio.fire)
       lastShot = time
       state = Aggressive
@@ -99,6 +99,7 @@ object Enemy {
     itemDrop: Option[ItemDrop] = None,
     sightRadius: Int,
     speed: Int,
+    projectile: Projectile.Config,
     spritesheet: AssetKey,
     audio: Audio,
     animations: Animations)

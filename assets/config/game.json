@@ -50,7 +50,13 @@
       "ammoCost": 1,
       "burst": 1,
       "fireInterval": 400,
-      "maxMissRadians": 0.03
+      "fireAudio": "pistol",
+      "maxMissRadians": 0.03,
+      "projectile": {
+        "texture": "bullet",
+        "speed": 600,
+        "damage": 10
+      }
     }
   },
   "enemies": {
@@ -58,6 +64,11 @@
       "spritesheet": "soldier",
       "firingInterval": 5000,
       "health": 20,
+      "projectile": {
+        "texture": "bullet",
+        "speed": 600,
+        "damage": 4
+      },
       "itemDrop": {
         "item": "clip",
         "offset": { "x": 0, "y": 12 }

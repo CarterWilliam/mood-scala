@@ -73,7 +73,7 @@ class Player(scene: Scene,
         scene.events.emit(AmmoChanged.key, event)
         body.stop()
         val direction = RND.realInRange(state.direction.radians - currentWeapon.maxMissRadians, state.direction.radians + currentWeapon.maxMissRadians)
-        projectiles.add(Coordinates(x, y), ExplicitDirection(direction))
+        projectiles.add(currentWeapon.projectile, Coordinates(x, y), ExplicitDirection(direction))
         scene.sound.play("pistol")
         anims.play(config.animations.firing(state.direction), ignoreIfPlaying = true)
         switchState(Firing)

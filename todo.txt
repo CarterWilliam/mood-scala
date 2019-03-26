@@ -2,7 +2,6 @@
 
 ## code
 - weapons
- - accuracy
  - burst
  - impact
 - items
@@ -19,7 +18,7 @@
 
 ## refactor
 - use sealerate or similar to autogenerate case object enums constructor/circe decoder
-- guns to be configured via JSON
+- pickupable - extract pick up logic to item
 - phaser update to 3.17.0
 
 ## major

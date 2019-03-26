@@ -3,6 +3,7 @@ package mood.config.parse.circe
 import io.circe.{Decoder, KeyDecoder}
 import io.circe.generic.semiauto.deriveDecoder
 import mood.sprites.player.guns.{WeaponConfig, WeaponKey}
+import mood.sprites.projectiles.Projectile
 
 object WeaponDecoders {
   import AmmoDecoders._
@@ -20,5 +21,6 @@ object WeaponDecoders {
     }
   }
 
+  implicit val projectileConfigDecoder: Decoder[Projectile.Config] = deriveDecoder[Projectile.Config]
   implicit val weaponConfigDecoder: Decoder[WeaponConfig] = deriveDecoder[WeaponConfig]
 }
