@@ -10,7 +10,7 @@ import org.phaser.animations.AnimationConfig.RepeatConfig.RepeatConfig
 
 object AnimationDecoders {
 
-  implicit val decodeConfig: Configuration = Configuration.default.withDefaults
+  implicit private val decodeConfig: Configuration = Configuration.default.withDefaults
 
   /**
     * Handles integers ({ "repeat": 3 }) or strings ({ "repeat": "never" })

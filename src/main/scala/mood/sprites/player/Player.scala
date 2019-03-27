@@ -83,7 +83,6 @@ class Player(scene: Scene,
         anims.play(config.animations.firing(state.direction), ignoreIfPlaying = true)
         switchState(Firing)
         (1 to currentWeapon.burst).foreach { i =>
-          println(s"firing projectile $i")
           val direction = RND.realInRange(state.direction.radians - currentWeapon.maxMissRadians, state.direction.radians + currentWeapon.maxMissRadians)
           projectiles.add(currentWeapon.projectile, Coordinates(x, y), ExplicitDirection(direction))
         }
@@ -141,11 +140,13 @@ class Player(scene: Scene,
   }
 
   private def equip(weapon: WeaponKey): Unit = {
-    state = state.copy(equipped = weapon)
-    val event = WeaponChanged(
-      ammoType = currentWeapon.ammoType,
-      remaining = state.ammo.remaining(currentWeapon.ammoType))
-    scene.events.emit(WeaponChanged.key, event)
+    if (state.weapons.contains(weapon)) {
+      state = state.copy(equipped = weapon)
+      val event = WeaponChanged(
+        ammoType = currentWeapon.ammoType,
+        remaining = state.ammo.remaining(currentWeapon.ammoType))
+      scene.events.emit(WeaponChanged.key, event)
+    }
   }
 
   private def updateAmmo(ammo: AmmoBag): Unit = {
@@ -182,6 +183,7 @@ object Player {
     direction: CompassDirection,
     health: Int,
     equipped: WeaponKey,
+    weapons: Seq[WeaponKey] = Seq(Pistol),
     ammo: AmmoBag)
 
   sealed trait Action
