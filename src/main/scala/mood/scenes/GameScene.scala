@@ -95,7 +95,7 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
 
   override def update(time: Double, delta: Double): Unit = {
     playerInput.invalidateCaches()
-    player.update(playerInput)
+    player.update(playerInput, time)
     enemies.getChildren().foreach(_.update(player, time))
   }
 }

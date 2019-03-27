@@ -33,6 +33,7 @@ class Player(scene: Scene,
   private val diagonalVelocity: Double = Math.floor(config.speed / Math.sqrt(2))
 
   private var state: State = initialState.getOrElse(config.initialState)
+  private var lastShot: Double = 0
 
   scene.physics.world.enable(this)
   scene.add.existing(this)
@@ -43,8 +44,8 @@ class Player(scene: Scene,
 
   setDepth(GameScene.Depth.Sprite)
 
-  def update(input: PlayerInput): Unit = state.action match {
-    case Normal => whileNormal(input)
+  def update(input: PlayerInput, time: Double): Unit = state.action match {
+    case Normal => whileNormal(input, time)
     case Firing => whileFiring()
     case Dying => // what can you do?
   }
@@ -70,14 +71,14 @@ class Player(scene: Scene,
     scene.events.emit(WeaponPickup.key, event)
   }
 
-  private def whileNormal(input: PlayerInput): Unit = {
+  private def whileNormal(input: PlayerInput, time: Double): Unit = {
     input.weaponSwitch.foreach {
       case WeaponSwitchPistol => equip(Pistol)
       case WeaponSwitchShotgun => equip(Shotgun)
     }
 
-    if (input.isFiring) {
-      fire()
+    if (input.isFiring && canFire(time)) {
+      fire(time)
     } else if (input.isMoving) {
       move(input)
     } else {
@@ -85,7 +86,11 @@ class Player(scene: Scene,
     }
   }
 
-  private def fire(): Unit = {
+  private def canFire(time: Double): Boolean = {
+    lastShot + currentWeapon.fireInterval < time
+  }
+
+  private def fire(time: Double): Unit = {
     state.ammo.take(currentWeapon.ammoType, currentWeapon.ammoCost) match {
       case Some(updatedAmmoBag) =>
         updateAmmo(updatedAmmoBag)
@@ -95,10 +100,11 @@ class Player(scene: Scene,
         scene.sound.play(currentWeapon.fireAudio)
         anims.play(config.animations.firing(state.direction), ignoreIfPlaying = true)
         switchState(Firing)
-        (1 to currentWeapon.burst).foreach { i =>
+        (1 to currentWeapon.burst).foreach { _ =>
           val direction = RND.realInRange(state.direction.radians - currentWeapon.maxMissRadians, state.direction.radians + currentWeapon.maxMissRadians)
           projectiles.add(currentWeapon.projectile, Coordinates(x, y), ExplicitDirection(direction))
         }
+        lastShot = time
       case None =>
         // don't shoot...
     }
@@ -155,6 +161,7 @@ class Player(scene: Scene,
   private def equip(weapon: WeaponKey): Unit = {
     if (state.weapons.contains(weapon)) {
       state = state.copy(equipped = weapon)
+      lastShot = 0
       val event = WeaponChanged(
         ammoType = currentWeapon.ammoType,
         remaining = state.ammo.remaining(currentWeapon.ammoType))
