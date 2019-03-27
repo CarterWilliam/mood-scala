@@ -3,7 +3,7 @@ package mood.config
 import io.circe.Decoder
 import io.circe.generic.semiauto._
 import mood.sprites.enemies.Enemy
-import mood.sprites.items.{AmmoItemConfig, AmmoItemKey, ItemConfig, ItemKey}
+import mood.sprites.items._
 import mood.sprites.player.Player
 import mood.sprites.player.guns.{WeaponConfig, WeaponKey}
 import mood.spacial.Position.{Offset, Size}
@@ -15,9 +15,12 @@ case class GameConfig(
   items: ItemsConfig
 )
 
-case class ItemsConfig(ammo: Map[ItemKey, AmmoItemConfig]) {
+case class ItemsConfig(
+  ammo: Map[ItemKey, AmmoItemConfig],
+  weapons: Map[ItemKey, WeaponItemConfig]) {
   def apply(itemKey: ItemKey): ItemConfig = itemKey match {
     case ammoKey: AmmoItemKey => ammo(ammoKey)
+    case weaponKey: WeaponItemKey => weapons(weaponKey)
   }
 }
 
@@ -41,6 +44,7 @@ object GameConfig {
   private implicit val enemyDecoder: Decoder[Enemy.Config] = deriveDecoder[Enemy.Config]
 
   private implicit val ammoItemDecoder: Decoder[AmmoItemConfig] = deriveDecoder[AmmoItemConfig]
+  private implicit val weaponItemDecoder: Decoder[WeaponItemConfig] = deriveDecoder[WeaponItemConfig]
   private implicit val itemConfigDecoder: Decoder[ItemsConfig] = deriveDecoder[ItemsConfig]
 
   implicit val decoder: Decoder[GameConfig] = deriveDecoder[GameConfig]

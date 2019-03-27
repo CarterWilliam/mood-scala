@@ -2,6 +2,8 @@ package mood.config
 
 import mood.config.LevelConfig.LevelKey
 import mood.scenes.GameScene
+import mood.spacial.Position.Coordinates
+import mood.sprites.items.ItemKey
 import org.phaser.loader.LoaderPlugin.AssetKey
 import org.phaser.scenes.Scene.SceneData
 
@@ -32,4 +34,7 @@ case class MapConfig(
   height: Int,
   scale: Int = 1,
   playerStartX: Int = 0,
-  playerStartY: Int = 0)
+  playerStartY: Int = 0,
+  items: Seq[ItemLocation])
+
+case class ItemLocation(key: ItemKey, location: Coordinates)

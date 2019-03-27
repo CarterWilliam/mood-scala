@@ -1,6 +1,6 @@
 package mood.events
 
-import mood.sprites.player.guns.Ammo
+import mood.sprites.player.guns.{Ammo, WeaponKey}
 import org.phaser.events.EventEmitter.EventKey
 
 object Events {
@@ -13,6 +13,11 @@ object Events {
   case class AmmoChanged(ammoType: Ammo, amount: Int)
   object AmmoChanged {
     val key: EventKey = "ammochanged"
+  }
+
+  case class WeaponPickup(weapon: WeaponKey, ammoType: Ammo, remainingAmmo: Int)
+  object WeaponPickup {
+    val key: EventKey = "weaponpickup"
   }
 
   case class WeaponChanged(ammoType: Ammo, remaining: Int)

@@ -3,12 +3,12 @@ package mood.sprites.player
 import mood.Assets
 import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
 import mood.config.GameConfig
-import mood.events.Events.{AmmoChanged, HealthChanged, WeaponChanged}
+import mood.events.Events.{AmmoChanged, HealthChanged, WeaponChanged, WeaponPickup}
 import mood.input.PlayerInput
 import mood.input.PlayerInput.{WeaponSwitchPistol, WeaponSwitchShotgun}
 import mood.scenes.GameScene
 import mood.sprites.components.Killable
-import mood.sprites.items.{AmmoItemConfig, ItemConfig}
+import mood.sprites.items.{AmmoItemConfig, ItemConfig, WeaponItemConfig}
 import mood.sprites.player.Player.Action.{Dying, Firing, Normal}
 import mood.sprites.player.Player.{Action, State}
 import mood.sprites.player.guns._
@@ -49,12 +49,25 @@ class Player(scene: Scene,
     case Dying => // what can you do?
   }
 
-  def pickup(item: ItemConfig): Unit = item match {
-    case ammo: AmmoItemConfig =>
-      scene.sound.play(ammo.pickupAudio)
-      updateAmmo(state.ammo.add(ammo.ammoType, ammo.amount))
-      val event = AmmoChanged(ammo.ammoType, state.ammo.remaining(ammo.ammoType))
-      scene.events.emit(AmmoChanged.key, event)
+  def pickup(item: ItemConfig): Unit = {
+    scene.sound.play(item.pickupAudio)
+    item match {
+      case ammo: AmmoItemConfig => pickupAmmo(ammo)
+      case weapon: WeaponItemConfig => pickupWeapon(weapon)
+    }
+  }
+
+  private def pickupAmmo(ammo: AmmoItemConfig): Unit = {
+    updateAmmo(state.ammo.add(ammo.ammoType, ammo.amount))
+    val event = AmmoChanged(ammo.ammoType, state.ammo.remaining(ammo.ammoType))
+    scene.events.emit(AmmoChanged.key, event)
+  }
+
+  private def pickupWeapon(weapon: WeaponItemConfig): Unit = {
+    state = state.copy(weapons = state.weapons + weapon.weapon)
+    updateAmmo(state.ammo.add(weapon.ammoType, weapon.ammoAmount))
+    val event = WeaponPickup(weapon.weapon, weapon.ammoType, state.ammo.remaining(weapon.ammoType))
+    scene.events.emit(WeaponPickup.key, event)
   }
 
   private def whileNormal(input: PlayerInput): Unit = {
@@ -183,7 +196,7 @@ object Player {
     direction: CompassDirection,
     health: Int,
     equipped: WeaponKey,
-    weapons: Seq[WeaponKey] = Seq(Pistol),
+    weapons: Set[WeaponKey] = Set(Pistol),
     ammo: AmmoBag)
 
   sealed trait Action

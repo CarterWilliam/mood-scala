@@ -58,6 +58,10 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
     MoodAnimations.createAnimations(anims, gameConfig)
 
     val items = new ItemsGroup(scene = this, gameConfig)
+    config.map.items.foreach { item =>
+      println(s"adding item to map: $item")
+      items.add(item.key, item.location)
+    }
 
     val enemyProjectiles = new ProjectilesGroup(scene = this)
     enemies = new EnemiesGroup(scene = this, gameConfig, enemyProjectiles, items)

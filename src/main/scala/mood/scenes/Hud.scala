@@ -1,6 +1,6 @@
 package mood.scenes
 
-import mood.events.Events.{AmmoChanged, HealthChanged, WeaponChanged}
+import mood.events.Events.{AmmoChanged, HealthChanged, WeaponChanged, WeaponPickup}
 import mood.scenes.Hud._
 import mood.sprites.player.guns._
 import org.phaser.gameobjects.sprite.Sprite
@@ -52,15 +52,23 @@ class Hud extends Scene(Hud.Config) {
       health.setText(s"${healthChanged.newValue.toString}%")
     })
     scene.events.on(AmmoChanged.key, { ammoChanged: AmmoChanged =>
-      ammo(ammoChanged.ammoType).remainingDisplay
-        .setText(s"${ammoChanged.amount.toString}%")
-      if (currentAmmo.ammoType == ammoChanged.ammoType) {
-        currentAmmo.display.setText(ammoChanged.amount.toString)
-      }
+      updateAmmo(ammoChanged.ammoType, ammoChanged.amount)
+    })
+    scene.events.on(WeaponPickup.key, { pickup: WeaponPickup =>
+      arms = arms.withWeapon(pickup.weapon)
+      updateAmmo(pickup.ammoType, pickup.remainingAmmo)
     })
     scene.events.on(WeaponChanged.key, { weaponChanged: WeaponChanged =>
-      currentAmmo.changeAmmo(weaponChanged.ammoType, weaponChanged.remaining)
+      currentAmmo = currentAmmo.changeAmmo(weaponChanged.ammoType, weaponChanged.remaining)
     })
+  }
+
+  private def updateAmmo(ammoType: Ammo, remaining: Int): Unit = {
+    ammo(ammoType).remainingDisplay.setText(s"${remaining.toString}%")
+    if (currentAmmo.ammoType == ammoType) {
+      currentAmmo.display.setText(remaining.toString)
+    }
+
   }
 
 }
@@ -109,7 +117,13 @@ object Hud {
     four: HasArmDisplay,
     five: HasArmDisplay,
     six: HasArmDisplay,
-    seven: HasArmDisplay)
+    seven: HasArmDisplay) {
+
+    def withWeapon(weapon: WeaponKey): Arms = weapon match {
+      case Pistol => copy(two = two.acquired())
+      case Shotgun => copy(three = three.acquired())
+    }
+  }
 
   case class AmmoAmounts(
     bullets: AmmoAmountsDisplay,
