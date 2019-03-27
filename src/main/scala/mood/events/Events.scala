@@ -14,4 +14,9 @@ object Events {
   object AmmoChanged {
     val key: EventKey = "ammochanged"
   }
+
+  case class WeaponChanged(ammoType: Ammo, remaining: Int)
+  object WeaponChanged {
+    val key: EventKey = "weaponchanged"
+  }
 }

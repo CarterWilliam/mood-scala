@@ -1,9 +1,12 @@
 # TODO
 
 ## code
+- initial config reflected in HUD
 - weapons
- - burst
+ - disable changing weapons without acquiring
+ - as item
  - impact
+ - chaingun
 - items
  - health
  - armour
@@ -18,6 +21,7 @@
 
 ## refactor
 - use sealerate or similar to autogenerate case object enums constructor/circe decoder
+- loadable assets in config
 - pickupable - extract pick up logic to item
 - phaser update to 3.17.0
 

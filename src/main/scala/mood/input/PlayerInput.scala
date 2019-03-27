@@ -4,7 +4,9 @@ import mood.input.PlayerInput._
 import mood.spacial.Direction._
 
 class PlayerInput(keyboard: MoodKeyboardInput) {
-  var cache: Map[String, Any] = Map.empty
+  private val directionVectorCache = new Cache[(Int, Int)]
+  private val directionCache = new Cache[Option[CompassDirection]]
+  private val weaponSwitchCache = new Cache[Option[WeaponSwitch]]
 
   def isFiring: Boolean = keyboard.space.isDown
 
@@ -14,7 +16,7 @@ class PlayerInput(keyboard: MoodKeyboardInput) {
 
   def isStrafing: Boolean = keyboard.shift.isDown
 
-  def direction: Option[CompassDirection] = cached("direction") {
+  def direction: Option[CompassDirection] = directionCache.fetch {
     directionVector match {
       case (0, 0) => None
       case (0, 1) => Some(North)
@@ -28,21 +30,23 @@ class PlayerInput(keyboard: MoodKeyboardInput) {
     }
   }
 
-  def weaponSwitch: Option[WeaponSwitch] = cached("weapon-switch") {
-    if (keyboard.pistol.isDown) Some(Pistol)
-    else if (keyboard.shotgun.isDown) Some(Shotgun)
-    else if (keyboard.chaingun.isDown) Some(Chaingun)
-    else if (keyboard.rocketLauncher.isDown) Some(RocketLauncher)
-    else if (keyboard.plasmaRifle.isDown) Some(PlasmaRifle)
-    else if (keyboard.bfg9000.isDown) Some(BFG)
+  def weaponSwitch: Option[WeaponSwitch] = weaponSwitchCache.fetch {
+    if (keyboard.pistol.isDown) Some(WeaponSwitchPistol)
+    else if (keyboard.shotgun.isDown) Some(WeaponSwitchShotgun)
+//    else if (keyboard.chaingun.isDown) Some(WeaponSwitchChaingun)
+//    else if (keyboard.rocketLauncher.isDown) Some(WeaponSwitchRocketLauncher)
+//    else if (keyboard.plasmaRifle.isDown) Some(WeaponSwitchPlasmaRifle)
+//    else if (keyboard.bfg9000.isDown) Some(WeaponSwitchBFG)
     else None
   }
 
   def invalidateCaches(): Unit = {
-    cache = Map.empty
+    directionVectorCache.invalidate()
+    directionCache.invalidate()
+    weaponSwitchCache.invalidate()
   }
 
-  private def directionVector: (Int, Int) = cached("direction-vector") {
+  private def directionVector: (Int, Int) = directionVectorCache.fetch {
     var movingX = 0
     var movingY = 0
 
@@ -54,20 +58,28 @@ class PlayerInput(keyboard: MoodKeyboardInput) {
     (movingX, movingY)
   }
 
-  private def cached[Object](key: String)(calculate: => Object): Object = {
-    val calculated = calculate
-    cache += key -> calculated
-    calculated
+}
+
+class Cache[T] {
+  private var value: Option[T] = None
+
+  def fetch(getValue: => T): T = value.getOrElse {
+    val retrieved = getValue
+    value = Some(retrieved)
+    retrieved
   }
+
+  def invalidate(): Unit =
+    value = None
 }
 
 object PlayerInput {
   sealed trait WeaponSwitch
-  case object ChainSaw extends WeaponSwitch
-  case object Pistol extends WeaponSwitch
-  case object Shotgun extends WeaponSwitch
-  case object Chaingun extends WeaponSwitch
-  case object RocketLauncher extends WeaponSwitch
-  case object PlasmaRifle extends WeaponSwitch
-  case object BFG extends WeaponSwitch
+//  case object WeaponSwitchChainSaw extends WeaponSwitch
+  case object WeaponSwitchPistol extends WeaponSwitch
+  case object WeaponSwitchShotgun extends WeaponSwitch
+//  case object WeaponSwitchChaingun extends WeaponSwitch
+//  case object WeaponSwitchRocketLauncher extends WeaponSwitch
+//  case object WeaponSwitchPlasmaRifle extends WeaponSwitch
+//  case object WeaponSwitchBFG extends WeaponSwitch
 }

@@ -48,10 +48,22 @@
     "pistol": {
       "ammoType": "bullets",
       "ammoCost": 1,
-      "burst": 1,
       "fireInterval": 400,
       "fireAudio": "pistol",
       "maxMissRadians": 0.03,
+      "projectile": {
+        "texture": "bullet",
+        "speed": 600,
+        "damage": 10
+      }
+    },
+    "shotgun": {
+      "ammoType": "shells",
+      "ammoCost": 1,
+      "burst": 3,
+      "fireInterval": 800,
+      "fireAudio": "shotgun",
+      "maxMissRadians": 0.05,
       "projectile": {
         "texture": "bullet",
         "speed": 600,

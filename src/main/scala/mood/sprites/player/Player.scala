@@ -3,14 +3,15 @@ package mood.sprites.player
 import mood.Assets
 import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
 import mood.config.GameConfig
-import mood.events.Events.{AmmoChanged, HealthChanged}
+import mood.events.Events.{AmmoChanged, HealthChanged, WeaponChanged}
 import mood.input.PlayerInput
+import mood.input.PlayerInput.{WeaponSwitchPistol, WeaponSwitchShotgun}
 import mood.scenes.GameScene
 import mood.sprites.components.Killable
 import mood.sprites.items.{AmmoItemConfig, ItemConfig}
 import mood.sprites.player.Player.Action.{Dying, Firing, Normal}
 import mood.sprites.player.Player.{Action, State}
-import mood.sprites.player.guns.{AmmoBag, Pistol, WeaponConfig, WeaponKey}
+import mood.sprites.player.guns._
 import mood.sprites.projectiles.ProjectilesGroup
 import mood.spacial.Direction._
 import mood.spacial.ExplicitDirection
@@ -43,18 +44,9 @@ class Player(scene: Scene,
   setDepth(GameScene.Depth.Sprite)
 
   def update(input: PlayerInput): Unit = state.action match {
-    case Normal =>
-      if (input.isFiring) {
-        fire()
-      } else if (input.isMoving) {
-        move(input)
-      } else {
-        stop()
-      }
-    case Firing =>
-      whileFiring()
-    case Dying =>
-      // what can you do?
+    case Normal => whileNormal(input)
+    case Firing => whileFiring()
+    case Dying => // what can you do?
   }
 
   def pickup(item: ItemConfig): Unit = item match {
@@ -65,6 +57,21 @@ class Player(scene: Scene,
       scene.events.emit(AmmoChanged.key, event)
   }
 
+  private def whileNormal(input: PlayerInput): Unit = {
+    input.weaponSwitch.foreach {
+      case WeaponSwitchPistol => equip(Pistol)
+      case WeaponSwitchShotgun => equip(Shotgun)
+    }
+
+    if (input.isFiring) {
+      fire()
+    } else if (input.isMoving) {
+      move(input)
+    } else {
+      stop()
+    }
+  }
+
   private def fire(): Unit = {
     state.ammo.take(currentWeapon.ammoType, currentWeapon.ammoCost) match {
       case Some(updatedAmmoBag) =>
@@ -72,11 +79,14 @@ class Player(scene: Scene,
         val event = AmmoChanged(currentWeapon.ammoType, updatedAmmoBag.remaining(currentWeapon.ammoType))
         scene.events.emit(AmmoChanged.key, event)
         body.stop()
-        val direction = RND.realInRange(state.direction.radians - currentWeapon.maxMissRadians, state.direction.radians + currentWeapon.maxMissRadians)
-        projectiles.add(currentWeapon.projectile, Coordinates(x, y), ExplicitDirection(direction))
-        scene.sound.play("pistol")
+        scene.sound.play(currentWeapon.fireAudio)
         anims.play(config.animations.firing(state.direction), ignoreIfPlaying = true)
         switchState(Firing)
+        (1 to currentWeapon.burst).foreach { i =>
+          println(s"firing projectile $i")
+          val direction = RND.realInRange(state.direction.radians - currentWeapon.maxMissRadians, state.direction.radians + currentWeapon.maxMissRadians)
+          projectiles.add(currentWeapon.projectile, Coordinates(x, y), ExplicitDirection(direction))
+        }
       case None =>
         // don't shoot...
     }
@@ -128,6 +138,14 @@ class Player(scene: Scene,
 
   private def updateHealth(health: Int): Unit = {
     state = state.copy(health = health)
+  }
+
+  private def equip(weapon: WeaponKey): Unit = {
+    state = state.copy(equipped = weapon)
+    val event = WeaponChanged(
+      ammoType = currentWeapon.ammoType,
+      remaining = state.ammo.remaining(currentWeapon.ammoType))
+    scene.events.emit(WeaponChanged.key, event)
   }
 
   private def updateAmmo(ammo: AmmoBag): Unit = {

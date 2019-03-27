@@ -1,6 +1,6 @@
 package mood.scenes
 
-import mood.events.Events.{AmmoChanged, HealthChanged}
+import mood.events.Events.{AmmoChanged, HealthChanged, WeaponChanged}
 import mood.scenes.Hud._
 import mood.sprites.player.guns._
 import org.phaser.gameobjects.sprite.Sprite
@@ -57,6 +57,9 @@ class Hud extends Scene(Hud.Config) {
       if (currentAmmo.ammoType == ammoChanged.ammoType) {
         currentAmmo.display.setText(ammoChanged.amount.toString)
       }
+    })
+    scene.events.on(WeaponChanged.key, { weaponChanged: WeaponChanged =>
+      currentAmmo.changeAmmo(weaponChanged.ammoType, weaponChanged.remaining)
     })
   }
 
@@ -124,6 +127,10 @@ object Hud {
 
   case class CurrentAmmo(ammoType: Ammo, display: Text) {
     def changeAmmo(ammoType: Ammo): CurrentAmmo = copy(ammoType = ammoType)
+    def changeAmmo(ammoType: Ammo, amount: Int): CurrentAmmo = {
+      display.setText(amount.toString)
+      copy(ammoType = ammoType)
+    }
   }
 }
 

@@ -1,12 +1,15 @@
 package mood.config.parse.circe
 
+import io.circe.generic.extras.Configuration
 import io.circe.{Decoder, KeyDecoder}
-import io.circe.generic.semiauto.deriveDecoder
+import io.circe.generic.extras.semiauto.deriveDecoder
 import mood.sprites.player.guns.{WeaponConfig, WeaponKey}
 import mood.sprites.projectiles.Projectile
 
 object WeaponDecoders {
   import AmmoDecoders._
+
+  implicit val decodeConfig: Configuration = Configuration.default.withDefaults
 
   implicit val decodeWeaponKeyAsKey: KeyDecoder[WeaponKey] = new KeyDecoder[WeaponKey] {
     override def apply(key: String): Option[WeaponKey] = WeaponKey(key)
