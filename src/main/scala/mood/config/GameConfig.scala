@@ -12,7 +12,8 @@ case class GameConfig(
   player: Player.Config,
   weapons: Map[WeaponKey, WeaponConfig],
   enemies: Map[String, Enemy.Config],
-  items: ItemsConfig
+  items: ItemsConfig,
+  blood: BloodConfig
 )
 
 case class ItemsConfig(
@@ -23,6 +24,8 @@ case class ItemsConfig(
     case weaponKey: WeaponItemKey => weapons(weaponKey)
   }
 }
+
+case class BloodConfig(particles: Int, lifespan: Int, gravity: Int, speed: Int)
 
 object GameConfig {
   import mood.config.parse.circe.AmmoDecoders.decodeAmmo
@@ -46,6 +49,8 @@ object GameConfig {
   private implicit val ammoItemDecoder: Decoder[AmmoItemConfig] = deriveDecoder[AmmoItemConfig]
   private implicit val weaponItemDecoder: Decoder[WeaponItemConfig] = deriveDecoder[WeaponItemConfig]
   private implicit val itemConfigDecoder: Decoder[ItemsConfig] = deriveDecoder[ItemsConfig]
+
+  private implicit val bloodConfigDecoder: Decoder[BloodConfig] = deriveDecoder[BloodConfig]
 
   implicit val decoder: Decoder[GameConfig] = deriveDecoder[GameConfig]
 }

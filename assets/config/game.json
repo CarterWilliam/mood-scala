@@ -168,5 +168,11 @@
     },
     "health": {},
     "armour": {}
+  },
+  "blood": {
+    "particles": 6,
+    "lifespan": 400,
+    "gravity": 100,
+    "speed": 20
   }
 }

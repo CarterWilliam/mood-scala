@@ -48,11 +48,11 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
 
     val bloodParticles = add.particles("blood")
     val particleEmitterConfig = ParticleEmitterConfig(
-      lifespan = 500,
-      gravityY = 100,
+      lifespan = gameConfig.blood.lifespan,
+      gravityY = gameConfig.blood.gravity,
       on = false,
-      quantity = 5,
-      speed = 50,
+      quantity = gameConfig.blood.particles,
+      speed = gameConfig.blood.speed,
     )
     bloodParticles.createEmitter(particleEmitterConfig)
 
