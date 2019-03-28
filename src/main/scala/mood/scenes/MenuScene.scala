@@ -5,7 +5,7 @@ import mood.Assets
 import mood.config._
 import mood.scenes.MenuScene.Depth
 import mood.spacial.Position.Coordinates
-import mood.sprites.items.ShotgunItem
+import mood.sprites.items.{ChaingunItem, ShotgunItem}
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.gameobjects.text.{Style, Text}
 import org.phaser.input.keyboard.CursorKeys
@@ -113,7 +113,8 @@ object MenuScene {
         playerStartX = 2,
         playerStartY = 25,
         items = Seq(
-          ItemLocation(ShotgunItem, Coordinates(8*24, 25*24))
+          ItemLocation(ShotgunItem, Coordinates(8*24, 25*24)),
+          ItemLocation(ChaingunItem, Coordinates(12*24, 25*24))
         )))
     ))
 }

@@ -122,6 +122,7 @@ object Hud {
     def withWeapon(weapon: WeaponKey): Arms = weapon match {
       case Pistol => copy(two = two.acquired())
       case Shotgun => copy(three = three.acquired())
+      case Chaingun => copy(four = four.acquired())
     }
   }
 

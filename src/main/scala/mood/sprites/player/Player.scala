@@ -5,7 +5,7 @@ import mood.animation.MoodAnimations.{Animation, DirectedAnimations}
 import mood.config.GameConfig
 import mood.events.Events.{AmmoChanged, HealthChanged, WeaponChanged, WeaponPickup}
 import mood.input.PlayerInput
-import mood.input.PlayerInput.{WeaponSwitchPistol, WeaponSwitchShotgun}
+import mood.input.PlayerInput.{WeaponSwitchChaingun, WeaponSwitchPistol, WeaponSwitchShotgun}
 import mood.scenes.GameScene
 import mood.sprites.components.Killable
 import mood.sprites.items.{AmmoItemConfig, ItemConfig, WeaponItemConfig}
@@ -46,7 +46,7 @@ class Player(scene: Scene,
 
   def update(input: PlayerInput, time: Double): Unit = state.action match {
     case Normal => whileNormal(input, time)
-    case Firing => whileFiring()
+    case Firing => whileFiring(input, time)
     case Dying => // what can you do?
   }
 
@@ -75,6 +75,7 @@ class Player(scene: Scene,
     input.weaponSwitch.foreach {
       case WeaponSwitchPistol => equip(Pistol)
       case WeaponSwitchShotgun => equip(Shotgun)
+      case WeaponSwitchChaingun => equip(Chaingun)
     }
 
     if (input.isFiring && canFire(time)) {
@@ -114,8 +115,10 @@ class Player(scene: Scene,
     gameConfig.weapons(state.equipped)
   }
 
-  private def whileFiring(): Unit = {
-    if (!anims.isPlaying) {
+  private def whileFiring(input: PlayerInput, time: Double): Unit = {
+    if (input.isFiring && canFire(time)) {
+      fire(time)
+    } else if (!anims.isPlaying) {
       switchState(Normal)
     }
   }

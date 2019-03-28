@@ -33,7 +33,7 @@ class PlayerInput(keyboard: MoodKeyboardInput) {
   def weaponSwitch: Option[WeaponSwitch] = weaponSwitchCache.fetch {
     if (keyboard.pistol.isDown) Some(WeaponSwitchPistol)
     else if (keyboard.shotgun.isDown) Some(WeaponSwitchShotgun)
-//    else if (keyboard.chaingun.isDown) Some(WeaponSwitchChaingun)
+    else if (keyboard.chaingun.isDown) Some(WeaponSwitchChaingun)
 //    else if (keyboard.rocketLauncher.isDown) Some(WeaponSwitchRocketLauncher)
 //    else if (keyboard.plasmaRifle.isDown) Some(WeaponSwitchPlasmaRifle)
 //    else if (keyboard.bfg9000.isDown) Some(WeaponSwitchBFG)
@@ -78,7 +78,7 @@ object PlayerInput {
 //  case object WeaponSwitchChainSaw extends WeaponSwitch
   case object WeaponSwitchPistol extends WeaponSwitch
   case object WeaponSwitchShotgun extends WeaponSwitch
-//  case object WeaponSwitchChaingun extends WeaponSwitch
+  case object WeaponSwitchChaingun extends WeaponSwitch
 //  case object WeaponSwitchRocketLauncher extends WeaponSwitch
 //  case object WeaponSwitchPlasmaRifle extends WeaponSwitch
 //  case object WeaponSwitchBFG extends WeaponSwitch

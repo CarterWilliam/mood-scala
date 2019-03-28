@@ -69,6 +69,18 @@
         "speed": 600,
         "damage": 10
       }
+    },
+    "chaingun": {
+      "ammoType": "bullets",
+      "ammoCost": 1,
+      "fireInterval": 150,
+      "fireAudio": "pistol",
+      "maxMissRadians": 0.04,
+      "projectile": {
+        "texture": "bullet",
+        "speed": 600,
+        "damage": 9
+      }
     }
   },
   "enemies": {
@@ -145,6 +157,13 @@
         "pickupAudio": "weapon-pickup",
         "ammoType": "shells",
         "ammoAmount": 8
+      },
+      "chaingun": {
+        "weapon": "chaingun",
+        "image": "chaingun",
+        "pickupAudio": "weapon-pickup",
+        "ammoType": "bullets",
+        "ammoAmount": 20
       }
     },
     "health": {},

@@ -2,21 +2,29 @@
 
 ## code
 - initial config reflected in HUD
+- maps defined in JSON config
 - weapons
- - as item
  - impact
- - chaingun
+ - rocket launcher
+ - plasma rifle
+ - bfg
+ - melee
 - items
  - health
  - armour
+ - keys
 - enemy
  - berserk state
  - path finding
 - blood particle emitter on impact
 - firing offsets
+- doors
+- inspect
 
 # art
+- design level 1
 - add imp, shotgun zombie, commando
+- doom guy holds different weapons
 
 ## refactor
 - use sealerate or similar to autogenerate case object enums constructor/circe decoder
@@ -26,3 +34,5 @@
 
 ## major
 - multiplayer
+- dialog box
+- cutscenes

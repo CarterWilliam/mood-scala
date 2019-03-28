@@ -16,11 +16,13 @@ case class WeaponConfig(
 sealed trait WeaponKey
 case object Pistol extends WeaponKey
 case object Shotgun extends WeaponKey
+case object Chaingun extends WeaponKey
 
 object WeaponKey {
   def apply(key: String): Option[WeaponKey] = key match {
     case "pistol" => Some(Pistol)
     case "shotgun" => Some(Shotgun)
+    case "chaingun" => Some(Chaingun)
     case _ => None
   }
 }

@@ -10,11 +10,13 @@ case object ClipItem extends AmmoItemKey
 
 sealed trait WeaponItemKey extends ItemKey
 case object ShotgunItem extends WeaponItemKey
+case object ChaingunItem extends WeaponItemKey
 
 object ItemKey {
   def apply(stringRepresentation: String): Option[ItemKey] = stringRepresentation match {
     case "clip" => Some(ClipItem)
     case "shotgun" => Some(ShotgunItem)
+    case "chaingun" => Some(ChaingunItem)
     case _ => None
   }
 }
