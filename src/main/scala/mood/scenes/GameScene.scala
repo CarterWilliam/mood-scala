@@ -47,6 +47,7 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
     physics.world.setBounds(0, 0, config.map.tileSize * config.map.width, config.map.tileSize * config.map.height)
 
     val bloodParticles = add.particles("blood")
+      .setDepth(Depth.Blood)
     val particleEmitterConfig = ParticleEmitterConfig(
       lifespan = gameConfig.blood.lifespan,
       gravityY = gameConfig.blood.gravity,
@@ -119,6 +120,7 @@ object GameScene {
     val Obstacles = 1
     /* Pick your body up and drop it */ val OnTheFloor = 2
     val Sprite = 3
-    val Foreground = 4
+    val Blood = 4
+    val Foreground = 5
   }
 }

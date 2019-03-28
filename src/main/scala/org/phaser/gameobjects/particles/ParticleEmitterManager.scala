@@ -1,9 +1,15 @@
 package org.phaser.gameobjects.particles
 
+import org.phaser.gameobjects.GameObject
+import org.phaser.gameobjects.components.{Depth, Transform}
+
 import scala.scalajs.js
 
 @js.native
-class ParticleEmitterManager extends js.Object {
+@js.annotation.JSGlobal("Phaser.GameObjects.Particles.ParticleEmitterManager")
+class ParticleEmitterManager extends GameObject
+  with Depth[ParticleEmitterManager]
+  with Transform[ParticleEmitterManager] {
 
   def emitters: js.Array[ParticleEmitter] = js.native
 
