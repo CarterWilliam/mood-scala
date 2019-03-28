@@ -1,6 +1,7 @@
 package org.phaser.gameobjects
 
 import org.phaser.gameobjects.graphics.{Graphics, GraphicsOptions}
+import org.phaser.gameobjects.particles.ParticleEmitterManager
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.gameobjects.text.{Style, Text}
 
@@ -13,6 +14,9 @@ trait GameObjectFactory extends js.Object {
 
   // GraphicsFactory
   def graphics(options: GraphicsOptions = GraphicsOptions()): Graphics = js.native
+
+  // ParticleEmitterManager
+  def particles(key: String): ParticleEmitterManager = js.native
 
   // SpriteFactory
   def sprite(x: Int, y: Int, texture: String): Sprite = js.native

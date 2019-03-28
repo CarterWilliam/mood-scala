@@ -68,6 +68,8 @@ class LoadScene extends Scene(SceneConfig(LoadScene.Key)) {
     loader.load(Assets.Textures.Clip)
     loader.load(Assets.Textures.Shotgun)
     loader.load(Assets.Textures.Chaingun)
+
+    loader.load(Assets.Textures.Blood)
   }
 
   private def loadMaps(levelConfig: LevelConfig) {

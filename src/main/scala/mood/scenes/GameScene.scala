@@ -10,6 +10,7 @@ import mood.sprites.items.{ItemSprite, ItemsGroup}
 import mood.sprites.player.Player
 import mood.sprites.projectiles.{Projectile, ProjectilesGroup}
 import mood.spacial.Position.Coordinates
+import org.phaser.gameobjects.particles.ParticleEmitterConfig
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
@@ -45,6 +46,16 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
 
     physics.world.setBounds(0, 0, config.map.tileSize * config.map.width, config.map.tileSize * config.map.height)
 
+    val bloodParticles = add.particles("blood")
+    val particleEmitterConfig = ParticleEmitterConfig(
+      lifespan = 500,
+      gravityY = 100,
+      on = false,
+      quantity = 5,
+      speed = 50,
+    )
+    bloodParticles.createEmitter(particleEmitterConfig)
+
     val playerProjectiles = new ProjectilesGroup(scene = this)
     player = new Player(
       scene = this,
@@ -59,7 +70,6 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
 
     val items = new ItemsGroup(scene = this, gameConfig)
     config.map.items.foreach { item =>
-      println(s"adding item to map: $item")
       items.add(item.key, item.location)
     }
 
@@ -72,6 +82,7 @@ class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(Phase
     physics.add.collider[Player, StaticTilemapLayer](player, highObstacles)
 
     def projectileCollider[S <: Sprite : Killable]: js.Function2[Projectile, S, Unit] = (projectile, killable) => {
+      bloodParticles.emitParticleAt(killable.x, killable.y)
       implicitly[Killable[S]].takeDamage(killable, projectile.config.damage)
       projectile.impact()
     }

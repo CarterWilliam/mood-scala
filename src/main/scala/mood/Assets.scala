@@ -44,6 +44,8 @@ object Assets {
     val Chaingun = TextureAsset("chaingun", "assets/images/items/guns/chaingun.png")
 
     val Bullet = TextureAsset("bullet", "assets/images/bullet.png")
+
+    val Blood = TextureAsset("blood", "assets/images/blood.png")
   }
 
   object SpriteSheets {
