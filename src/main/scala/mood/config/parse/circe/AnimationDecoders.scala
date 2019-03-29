@@ -9,8 +9,7 @@ import org.phaser.animations.AnimationConfig.RepeatConfig
 import org.phaser.animations.AnimationConfig.RepeatConfig.RepeatConfig
 
 object AnimationDecoders {
-
-  implicit private val decodeConfig: Configuration = Configuration.default.withDefaults
+  import WithDefaultsConfig._
 
   /**
     * Handles integers ({ "repeat": 3 }) or strings ({ "repeat": "never" })

@@ -10,3 +10,7 @@
 /project/project/target
 /project/target
 /target
+
+# Tiled
+*.tmx
+assets/maps/tiled/*

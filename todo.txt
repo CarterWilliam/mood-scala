@@ -16,7 +16,6 @@
 - enemy
  - berserk state
  - path finding
-- blood particle emitter on impact
 - firing offsets
 - doors
 - inspect

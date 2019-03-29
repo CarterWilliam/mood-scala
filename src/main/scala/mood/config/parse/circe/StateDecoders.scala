@@ -7,25 +7,16 @@ import mood.sprites.player.Player
 import mood.spacial.Direction.CompassDirection
 
 object StateDecoders {
+  import WithDefaultsConfig._
   import AmmoDecoders._
+  import SpacialDecoders._
   import WeaponDecoders._
-
-  implicit private val decodeConfig: Configuration = Configuration.default.withDefaults
 
   implicit val decodeAction: Decoder[Player.Action] = {
     Decoder.decodeString.emap[Player.Action] { key =>
       Player.Action(key) match {
         case Some(action) => Right(action)
         case None => Left(s"Invalid action '$key'")
-      }
-    }
-  }
-
-  implicit val decodeDirection: Decoder[CompassDirection] = {
-    Decoder.decodeString.emap[CompassDirection] { key =>
-      CompassDirection(key) match {
-        case Some(action) => Right(action)
-        case None => Left(s"Invalid direction '$key'")
       }
     }
   }

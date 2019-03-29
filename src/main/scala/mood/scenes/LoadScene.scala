@@ -1,22 +1,18 @@
 package mood.scenes
 
 import io.circe.parser.decode
-import io.circe.generic.extras._
-import mood.config.{GameConfig, LevelConfig}
+import mood.config.{GameConfig, LevelConfig, LevelKey}
 import mood.error.GameError
 import mood.{Assets, SceneLoader}
 import org.phaser.gameobjects.graphics.{GraphicsLineStyle, GraphicsOptions}
 import org.phaser.scenes.Scene.SceneKey
 import org.phaser.scenes.{Scene, SceneConfig}
 
-import scala.scalajs.js.annotation.ScalaJSDefined
-
-@ScalaJSDefined
 class LoadScene extends Scene(SceneConfig(LoadScene.Key)) {
   import LoadScene._
 
   override type Key = LoadScene.Key.type
-  override type Data = LevelConfig
+  override type Data = LevelKey
 
   private val loader = new SceneLoader(scene = this)
 
@@ -27,13 +23,11 @@ class LoadScene extends Scene(SceneConfig(LoadScene.Key)) {
 
     createLoadBar()
 
-    val gameConfig = parseConfig()
-
     loadImages()
-    loadMaps(sys.settings.data)
+    loadMaps()
     loadSprites()
     loadAudio()
-    loadScenes(sys.settings.data, gameConfig)
+    loadScenes()
   }
 
   private def createLoadBar(): Unit = {
@@ -51,16 +45,26 @@ class LoadScene extends Scene(SceneConfig(LoadScene.Key)) {
 
   }
 
-  private def parseConfig(): GameConfig = {
-    val configJson: String = cache.text.get("game-config")
-    decode[GameConfig](configJson) match {
+  lazy val gameConfig = decode[GameConfig](cache.text.get(GameConfig.LoadKey)) match {
+    case Left(error) =>
+      val gameError = GameError(s"Failed to parse game config: ${error.getMessage}", error)
+      GameError.fatal(game, gameError)
+    case Right(config) =>
+      config
+  }
+
+  lazy val levelConfig = {
+    import mood.config.parse.circe.LevelConfigDecoder._
+    val levelKey: LevelKey = sys.settings.data
+    decode[LevelConfig](cache.text.get(levelKey.key)) match {
       case Left(error) =>
-        val gameError = GameError(s"Failed to parse game config: ${error.getMessage}", error)
+        val gameError = GameError(s"Failed to parse level config: ${error.getMessage}", error)
         GameError.fatal(game, gameError)
       case Right(config) =>
         config
     }
   }
+
 
   private def loadImages(): Unit = {
     loader.load(Assets.Textures.HUD)
@@ -72,7 +76,7 @@ class LoadScene extends Scene(SceneConfig(LoadScene.Key)) {
     loader.load(Assets.Textures.Blood)
   }
 
-  private def loadMaps(levelConfig: LevelConfig) {
+  private def loadMaps() {
     levelConfig.assets.images.foreach { asset =>
       load.image(asset.key, asset.url)
     }
@@ -111,14 +115,14 @@ class LoadScene extends Scene(SceneConfig(LoadScene.Key)) {
     loader.load(Assets.Audio.WeaponPickup)
   }
 
-  private def loadScenes(config: LevelConfig, gameConfig: GameConfig): Unit = {
-    config.scenes.foreach { sceneConfig =>
+  private def loadScenes(): Unit = {
+    levelConfig.scenes.foreach { sceneConfig =>
       this.scene.add(sceneConfig.key, new GameScene(sceneConfig, gameConfig))
     }
   }
 
   override def create(): Unit = {
-    scene.start[GameScene](sys.settings.data.initialScene)
+    scene.start[GameScene](levelConfig.initialScene)
   }
 
 }

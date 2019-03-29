@@ -1,0 +1,32 @@
+{
+  "key": "scrapyard",
+  "assets": {
+    "tilemaps": [
+      { "key": "map-futuristic",  "url": "assets/maps/futuristic.json" }
+    ],
+    "images": [
+      { "key": "tiles-futuristic", "url": "assets/maps/futuristic.png" }
+    ]
+  },
+  "initialScene": "scrapyard",
+  "scenes": [
+    {
+      "key": "scrapyard",
+      "map": {
+        "tilemap": "map-futuristic",
+        "tilemapName": "futuristic",
+        "image": "tiles-futuristic",
+        "tileSize": 24,
+        "width": 64,
+        "height": 32,
+        "playerStartX": 2,
+        "playerStartY": 25,
+        "items": [
+          { "key": "shotgun", "location":  { "x": 192, "y": 600 } },
+          { "key": "chaingun", "location":  { "x": 288, "y": 600 } }
+        ]
+      }
+    }
+  ]
+
+}

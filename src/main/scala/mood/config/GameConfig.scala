@@ -7,6 +7,7 @@ import mood.sprites.items._
 import mood.sprites.player.Player
 import mood.sprites.player.guns.{WeaponConfig, WeaponKey}
 import mood.spacial.Position.{Offset, Size}
+import org.phaser.loader.LoaderPlugin.AssetKey
 
 case class GameConfig(
   player: Player.Config,
@@ -28,6 +29,8 @@ case class ItemsConfig(
 case class BloodConfig(particles: Int, lifespan: Int, gravity: Int, speed: Int)
 
 object GameConfig {
+  val LoadKey: AssetKey = "game-config"
+
   import mood.config.parse.circe.AmmoDecoders.decodeAmmo
   import mood.config.parse.circe.AnimationDecoders._
   import mood.config.parse.circe.ItemDecoders._

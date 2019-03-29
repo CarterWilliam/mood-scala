@@ -1,7 +1,7 @@
 package mood.scenes
 
 import mood.animation.MoodAnimations
-import mood.config.{GameConfig, LevelConfig, SceneConfig}
+import mood.config.{GameConfig, LevelKey, SceneConfig}
 import mood.input.{MoodKeyboardInput, PlayerInput}
 import mood.scenes.GameScene.Depth
 import mood.sprites.components.Killable
@@ -12,7 +12,7 @@ import mood.sprites.projectiles.{Projectile, ProjectilesGroup}
 import mood.spacial.Position.Coordinates
 import org.phaser.gameobjects.particles.ParticleEmitterConfig
 import org.phaser.gameobjects.sprite.Sprite
-import org.phaser.scenes.Scene.SceneKey
+import org.phaser.scenes.Scene.{NoData, SceneKey}
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
 import org.phaser.tilemaps.{StaticTilemapLayer, TilemapConfig}
 
@@ -20,7 +20,7 @@ import scala.scalajs.js
 
 class GameScene(config: SceneConfig, gameConfig: GameConfig) extends Scene(PhaserSceneConfig(config.key)) {
   override type Key = GameScene.Key
-  override type Data = LevelConfig
+  override type Data = NoData
 
   var keys: MoodKeyboardInput = _
   var playerInput: PlayerInput = _

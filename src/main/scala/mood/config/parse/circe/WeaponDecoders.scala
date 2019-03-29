@@ -7,9 +7,8 @@ import mood.sprites.player.guns.{WeaponConfig, WeaponKey}
 import mood.sprites.projectiles.Projectile
 
 object WeaponDecoders {
+  import WithDefaultsConfig._
   import AmmoDecoders._
-
-  implicit private val decodeConfig: Configuration = Configuration.default.withDefaults
 
   implicit val decodeWeaponKeyAsKey: KeyDecoder[WeaponKey] = new KeyDecoder[WeaponKey] {
     override def apply(key: String): Option[WeaponKey] = WeaponKey(key)

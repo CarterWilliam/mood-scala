@@ -1,28 +1,22 @@
 package mood.config
 
-import mood.config.LevelConfig.LevelKey
 import mood.scenes.GameScene
 import mood.spacial.Position.Coordinates
 import mood.sprites.items.ItemKey
 import org.phaser.loader.LoaderPlugin.AssetKey
 import org.phaser.scenes.Scene.SceneData
 
-import scala.scalajs.js
+case class LevelKey(key: String) extends SceneData
 
-@js.annotation.ScalaJSDefined
-class LevelConfig(
-  val key: LevelKey,
-  val loadingImage: Option[AssetKey] = None,
-  val assets: LevelAssets,
-  val initialScene: GameScene.Key,
-  val scenes: Seq[SceneConfig]) extends SceneData
+case class LevelConfig(
+  key: LevelKey,
+  loadingImage: Option[AssetKey] = None,
+  assets: LevelAssets,
+  initialScene: GameScene.Key,
+  scenes: Seq[SceneConfig])
 
 case class LevelAssets(tilemaps: Seq[LevelAsset], images: Seq[LevelAsset])
 case class LevelAsset(key: String, url: String)
-
-object LevelConfig {
-  type LevelKey = String
-}
 
 case class SceneConfig(key: GameScene.Key, map: MapConfig)
 case class MapConfig(

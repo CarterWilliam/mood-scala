@@ -4,8 +4,6 @@ import cats.data.NonEmptyList
 import mood.Assets
 import mood.config._
 import mood.scenes.MenuScene.Depth
-import mood.spacial.Position.Coordinates
-import mood.sprites.items.{ChaingunItem, ShotgunItem}
 import org.phaser.gameobjects.sprite.Sprite
 import org.phaser.gameobjects.text.{Style, Text}
 import org.phaser.input.keyboard.CursorKeys
@@ -13,7 +11,6 @@ import org.phaser.scenes.Scene.{NoData, SceneKey}
 import org.phaser.scenes.{Scene, SceneConfig => PhaserSceneConfig}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
-import scala.scalajs.js
 
 class MenuScene extends Scene(PhaserSceneConfig(MenuScene.Key)) {
   override type Key = MenuScene.Key.type
@@ -95,28 +92,6 @@ object MenuScene {
     )
   )
 
-  val scrapyardKey = GameScene.Key("scrapyard")
-  val LevelOneConfig = new LevelConfig(
-    key = "level-one",
-    assets = LevelAssets(
-      tilemaps = Seq(LevelAsset("map-futuristic", "assets/maps/futuristic.json")),
-      images = Seq(LevelAsset("tiles-futuristic", "assets/maps/futuristic.png"))),
-    initialScene = scrapyardKey,
-    scenes = Seq(
-      SceneConfig(key = scrapyardKey, map = MapConfig(
-        tilemap = "map-futuristic",
-        "futuristic",
-        "tiles-futuristic",
-        tileSize = 24,
-        width = 64,
-        height = 32,
-        playerStartX = 2,
-        playerStartY = 25,
-        items = Seq(
-          ItemLocation(ShotgunItem, Coordinates(8*24, 25*24)),
-          ItemLocation(ChaingunItem, Coordinates(12*24, 25*24))
-        )))
-    ))
 }
 
 class MenuController(menuScene: MenuScene) {
@@ -149,7 +124,7 @@ class MenuController(menuScene: MenuScene) {
         model = model.select()
         drawChoice()
       case StartScene(_) =>
-        menuScene.scene.start[LoadScene](LoadScene.Key, MenuScene.LevelOneConfig)
+        menuScene.scene.start[LoadScene](LoadScene.Key, LevelKey("level1"))
     }
   }
 

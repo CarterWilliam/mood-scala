@@ -18,6 +18,7 @@ class BootScene extends Scene(SceneConfig(BootScene.Key)) {
     loader.load(Assets.Audio.Pistol)
 
     load.text("game-config", "assets/config/game.json")
+    load.text("level1", "assets/config/levels/level1.json")
   }
 
   override def create(): Unit = {
