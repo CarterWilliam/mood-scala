@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "phaser": "^3.15.1",
+    "phaser": "^3.55.2",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
